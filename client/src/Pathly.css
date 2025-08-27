@@ -1,0 +1,12 @@
+.pathly-body {
+    width: 90%;
+    height: 90%;
+    background-color: bisque;
+}
+
+/* Google maps styling*/
+gmp-map {
+    height: 100%;
+    width: 100%;
+    z-index: 10;
+}
