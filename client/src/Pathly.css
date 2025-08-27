@@ -2,6 +2,18 @@
     width: 90%;
     height: 90%;
     background-color: bisque;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+.pathly-travel-body {
+    width: 30%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    background-color: rgb(255, 255, 255);
+    z-index: 11;
 }
 
 /* Google maps styling*/
@@ -10,3 +22,4 @@ gmp-map {
     width: 100%;
     z-index: 10;
 }
+
