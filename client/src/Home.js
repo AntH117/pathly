@@ -1,25 +1,44 @@
 import './Home.css';
 import React from 'react';
-import { Map } from '@vis.gl/react-google-maps';
+import { Map, Route, RouteMatrix, useMapsLibrary  } from '@vis.gl/react-google-maps';
 import { motion, setDragLock } from "motion/react"
 import Icons from './Icons/Icons';
+import SearchBox from './SearchBox';
 
-export default function Home() {
+export default function Home({locations, setLocations, startLocation, setStartLocation}) {
 
+    function StartLocation() {
+
+        return <div className='start-location-body'>
+        <span style={{width: '10%', display: 'flex', justifyContent: 'center'}}><Icons.Location width={'22px'} height={'22px'} color={'red'}/></span>
+        <span style={{width: '90%'}}><p>{startLocation?.name || 'Add location to start'}</p></span>
+        </div>
+    }
+    console.log(locations)
     function Locations({length}) {
-        const [locations, setLocations] = React.useState([])
 
-        function IndividualLocation() {
-
+        function IndividualLocation({id}) {
+            const locationId = id
+            const locationName = locations.find(item => item.id == locationId).location?.name
+            function handleLocationChange(place) {
+                setLocations(locations.map((x) => { 
+                    return x.id === locationId ? {...x, location: place }: x
+                }))
+            }
             return <div className='individual-location-body'>
-                <p>Add Destination</p>
-                <div className='individual-location-cancel' onClick={() => setLocations(locations.slice(0, locations.length - 1))}>
+                <SearchBox placeholder={'Add location'} onPlaceSelected={handleLocationChange} />
+                <div className='individual-location-cancel' onClick={() => setLocations(locations.filter((location) => location.id !== locationId))}>
                     <Icons.X color={'rgb(255, 169, 169)'}/>
                 </div>
             </div>
         }
 
-
+        function addLocation() {
+            const newItem = {
+                id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
+              };
+              setLocations([...locations, newItem])
+        }
 
         return <div className='pathly-locations-body'>
             <div className='location-markers'>
@@ -28,15 +47,15 @@ export default function Home() {
                         <div className='ring'></div>
                     </div>
                 })}
-                <div className='ring-add-container'>
-                    <div className='ring-add' onClick={() => setLocations([...locations, 1])}>
+                {startLocation && <div className='ring-add-container'>
+                    <div className='ring-add' onClick={() => addLocation()}>
                         <Icons.Plus />
                     </div>
-                </div>
+                </div>}
             </div>
             <div className='location-name-body'>
-                {locations.map((index) => {
-                    return <IndividualLocation />
+                {locations.map((location) => {
+                    return <IndividualLocation id={location.id}/>
                 })}
             </div>
         </div>
@@ -47,8 +66,9 @@ export default function Home() {
         return <div className='pathly-destinations-body'>
             <motion.div className='pathly-start-body'>
                 <Icons.LookingGlass />
-                <input className='pathly-start-input' placeholder='Start'></input>
+                <SearchBox onPlaceSelected={setStartLocation}/>
             </motion.div>
+            <StartLocation />
             <Locations />
         </div>
     }

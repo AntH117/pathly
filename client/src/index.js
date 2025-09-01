@@ -17,7 +17,7 @@ const mapAPI =  process.env.REACT_APP_GOOGLE_MAPS_API_KEY
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <APIProvider apiKey={mapAPI}>
+    <APIProvider apiKey={mapAPI} >
       <RouterProvider router={router}/>
     </APIProvider>
   </React.StrictMode>

@@ -23,11 +23,12 @@ function Maps() {
 
 
 export default function Pathly() {
-
+    const [locations, setLocations] = React.useState([])
+    const [startLocation, setStartLocation] = React.useState(null)
     
     return <div className='pathly-body'>
         <div className='pathly-travel-body'>
-            <Home />
+            <Home locations={locations} setLocations={setLocations} startLocation={startLocation} setStartLocation={setStartLocation}/>
         </div>
         <Maps />
     </div>
