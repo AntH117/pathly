@@ -11,22 +11,22 @@ export default function Home({locations, setLocations, startLocation, setStartLo
 
         return <div className='start-location-body'>
         <span style={{width: '10%', display: 'flex', justifyContent: 'center'}}><Icons.Location width={'22px'} height={'22px'} color={'red'}/></span>
-        <span style={{width: '90%'}}><p>{startLocation?.name || 'Add location to start'}</p></span>
+        <span style={{width: '90%'}}><p>{startLocation?.formatted_address || 'Add location to start'}</p></span>
         </div>
     }
-    console.log(locations)
     function Locations({length}) {
 
         function IndividualLocation({id}) {
             const locationId = id
-            const locationName = locations.find(item => item.id == locationId).location?.name
+            const locationName = locations.find(item => item.id == locationId).location?.formatted_address
             function handleLocationChange(place) {
                 setLocations(locations.map((x) => { 
                     return x.id === locationId ? {...x, location: place }: x
                 }))
             }
+            console.log(locations)
             return <div className='individual-location-body'>
-                <SearchBox placeholder={'Add location'} onPlaceSelected={handleLocationChange} />
+                <SearchBox placeholder={'Add location'} onPlaceSelected={handleLocationChange} initialValue={locationName}/>
                 <div className='individual-location-cancel' onClick={() => setLocations(locations.filter((location) => location.id !== locationId))}>
                     <Icons.X color={'rgb(255, 169, 169)'}/>
                 </div>
