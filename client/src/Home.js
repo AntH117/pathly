@@ -5,7 +5,7 @@ import { motion, setDragLock } from "motion/react"
 import Icons from './Icons/Icons';
 import SearchBox from './SearchBox';
 
-export default function Home({locations, setLocations, startLocation, setStartLocation}) {
+export default function Home({locations, setLocations, startLocation, setStartLocation, markers, setMarkers}) {
 
     function StartLocation() {
 
@@ -14,20 +14,47 @@ export default function Home({locations, setLocations, startLocation, setStartLo
         <span style={{width: '90%'}}><p>{startLocation?.formatted_address || 'Add location to start'}</p></span>
         </div>
     }
+
+    function handleLocationChange({place, start, locationId}) {
+        const newMarker = {
+            id: locationId || 'start',
+            name: place.name,
+            position: {
+              lat: place.geometry.location.lat(),
+              lng: place.geometry.location.lng()
+            }
+        };
+        setMarkers(prev => {
+            const exists = prev.find(marker => marker.id === newMarker.id);
+            if (exists) {
+              // replace the existing marker
+              return prev.map(marker => marker.id === newMarker.id ? newMarker : marker);
+            } else {
+              // add a new marker
+              return [...prev, newMarker];
+            }
+          });
+        if (start) {
+            setStartLocation(place)
+        } else {
+            setLocations(locations.map((x) => { 
+                return x.id === locationId ? {...x, location: place }: x
+            }))
+        }
+    }
     function Locations({length}) {
 
         function IndividualLocation({id}) {
             const locationId = id
             const locationName = locations.find(item => item.id == locationId).location?.formatted_address
-            function handleLocationChange(place) {
-                setLocations(locations.map((x) => { 
-                    return x.id === locationId ? {...x, location: place }: x
-                }))
+            function handleLocationDelete() {
+                setLocations(locations.filter((location) => location.id !== locationId))
+                setMarkers(markers.filter((marker) => marker.id !== locationId))
             }
             console.log(locations)
             return <div className='individual-location-body'>
-                <SearchBox placeholder={'Add location'} onPlaceSelected={handleLocationChange} initialValue={locationName}/>
-                <div className='individual-location-cancel' onClick={() => setLocations(locations.filter((location) => location.id !== locationId))}>
+                <SearchBox placeholder={'Add location'} onPlaceSelected={(place) => handleLocationChange({place, locationId})} initialValue={locationName}/>
+                <div className='individual-location-cancel' onClick={() => handleLocationDelete}>
                     <Icons.X color={'rgb(255, 169, 169)'}/>
                 </div>
             </div>
@@ -66,7 +93,7 @@ export default function Home({locations, setLocations, startLocation, setStartLo
         return <div className='pathly-destinations-body'>
             <motion.div className='pathly-start-body'>
                 <Icons.LookingGlass />
-                <SearchBox onPlaceSelected={setStartLocation}/>
+                <SearchBox onPlaceSelected={(place) => handleLocationChange({place, start: true})}/>
             </motion.div>
             <StartLocation />
             <Locations />
