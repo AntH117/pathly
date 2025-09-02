@@ -1,10 +1,72 @@
-import { Map, useMap, Marker } from '@vis.gl/react-google-maps';
+import { Map, useMap, Marker, useMapsLibrary  } from '@vis.gl/react-google-maps';
 import './Maps.css';
 import React from 'react';
+import Icons from './Icons/Icons';
 
-
-export default function Maps({startLocation, markers}) {
+function PathingDirections({origin, destination, num, travelMode}) {
     const map = useMap()
+    const routesLib = useMapsLibrary("routes");
+    const [pathingRender, setPathingRender] = React.useState(null);
+
+    //Pathing option libary
+    const pathingColours = [ 
+        "#BAE7FF", // baby blue
+        "#BAFFC9", // soft green
+        "#D7BAFF", // soft purple/lavender
+        "#FFDFBA", // soft orange
+        "#FFFFBA", // soft yellow
+        "#BAE1FF", // soft blue
+        "#FFB3BA", // soft red/pink
+        "#FFBAE1", // soft magenta
+        "#BFFCC6", // minty green
+        "#FFC4BA", // peach
+    ]
+    //Pathing between locations
+    React.useEffect(() => {
+        if (!routesLib || !map || !origin || !destination) return;
+    
+        // Set up DirectionsService + DirectionsRenderer
+        const directionsService = new routesLib.DirectionsService();
+        //Pathing options
+        const renderer = new routesLib.DirectionsRenderer({ 
+            map, 
+            suppressMarkers: true,
+            polylineOptions: {
+                strokeColor: pathingColours[num % pathingColours.length],
+                strokeOpacity: 0.8, 
+                strokeWeight: 6,    
+            }
+        });
+    
+        directionsService.route(
+          {
+            origin,
+            destination,
+            travelMode: routesLib.TravelMode.DRIVING, // DRIVING | WALKING | BICYCLING | TRANSIT (Change based on mode)
+          },
+          (result, status) => {
+            if (status === "OK") {
+              renderer.setDirections(result);
+              setPathingRender(renderer);
+            } else {
+              console.error("Directions request failed:", status);
+            }
+          }
+        );
+    
+        return () => {
+          // clean up old route if origin/destination changes
+          renderer.setMap(null);
+        };
+      }, [routesLib, map, origin, destination]);
+
+
+}
+
+
+export default function Maps({startLocation, markers, locations}) {
+    const map = useMap()
+    const [mapableLocations, setMapableLocations] = React.useState([])
 
     function startLocationZoom() {
         const lat = startLocation.geometry.location.lat();
@@ -13,13 +75,18 @@ export default function Maps({startLocation, markers}) {
         map.setZoom(15);
     }
 
-    console.log(startLocation)
+    // Starting location zoom
     React.useEffect(() => {
         if (startLocation) {
             startLocationZoom()
         }
     }, [startLocation])
 
+    //set mapeable locations
+    React.useEffect(() => {
+        const ViableLocations = locations.filter((l) => l?.location)
+        setMapableLocations([startLocation, ...ViableLocations.map(l => l.location)])
+    }, [startLocation, locations])
 
     // setting center/zoom locks the movement/zoom
     return (
@@ -33,9 +100,25 @@ export default function Maps({startLocation, markers}) {
                     mapTypeControl={false} //Remove satelite toggle
                     fullscreenControl={false} //Remove full screen toggle
                 >
-                    {markers.map((m) => (
-                        <Marker key={m.id} position={m.position} />
+                    {markers.map((m, i) => (
+                        <Marker 
+                            key={m.id} 
+                            position={m.position} 
+                            label={String.fromCharCode(64 + (i + 1))}
+
+                        /> //Show markers on the map
                     ))}
+                    {mapableLocations.map((location, i) => {
+                        if (i === mapableLocations.length - 1) return null //Skip last item in array
+                        return (
+                            <PathingDirections 
+                                key={i}
+                                num={i}
+                                origin={{placeId: location.place_id}}
+                                destination={{placeId: mapableLocations[i + 1].place_id}}
+                            />
+                        )
+                    })}
                 </Map>
             </span>
         </div>

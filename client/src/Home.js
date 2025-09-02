@@ -44,7 +44,6 @@ export default function Home({locations, setLocations, startLocation, setStartLo
     }
     
     function Locations({length}) {
-        console.log(locations)
         function IndividualLocation({id}) {
             const locationId = id
             const locationName = locations.find(item => item.id == locationId).location?.formatted_address
@@ -54,9 +53,52 @@ export default function Home({locations, setLocations, startLocation, setStartLo
                 setMarkers(markers.filter((marker) => marker.id !== locationId))
             }
 
-            console.log(locations)
+            function Rings() {
+                return (
+                    <div className='location-markers'>
+                    <div className='ring-container'>
+                        <div className='ring'></div>
+                    </div>
+                    <div className='ring-container'>
+                        <div className='ring'></div>
+                    </div>
+                </div>
+                )
+            }
+
+            function TransportSelect() {
+
+                function TransportDropDown() {
+
+                    return (
+                        <div className='transport-dropdown-body'>
+                            
+                        </div>
+                    )
+                }
+
+                return (
+                <div className='transport-select-body'>
+                    <div className='transport-icon'>
+                        <Icons.Car width={'80%'} height={'80%'} color={'gray'}/>
+                    </div>
+                    <p className='transport-name'>Car</p>
+                    <div className='transport-dropdown-icon'>
+                        <Icons.ArrowDown width={'0.8rem'} height={'0.8rem'} color={'gray'}/>
+                    </div>
+                    <TransportDropDown />
+                </div>
+                )
+            }
+
             return <div className='individual-location-body'>
-                <SearchBox placeholder={'Add location'} onPlaceSelected={(place) => handleLocationChange({place, locationId})} initialValue={locationName}/>
+                <Rings />
+                <div className='individual-location-search'>
+                    <div className='individual-location-transport'>
+                        <TransportSelect />
+                    </div>
+                    <SearchBox placeholder={'Add location'} onPlaceSelected={(place) => handleLocationChange({place, locationId})} initialValue={locationName}/>
+                </div>
                 <div className='individual-location-cancel' onClick={() => handleLocationDelete()}>
                     <Icons.X color={'rgb(255, 169, 169)'}/>
                 </div>
@@ -71,7 +113,7 @@ export default function Home({locations, setLocations, startLocation, setStartLo
         }
 
         return <div className='pathly-locations-body'>
-            <div className='location-markers'>
+            {/* <div className='location-markers'>
                 {locations.map(() => {
                     return <div className='ring-container'>
                         <div className='ring'></div>
@@ -82,13 +124,13 @@ export default function Home({locations, setLocations, startLocation, setStartLo
                         <Icons.Plus />
                     </div>
                 </div>}
+            </div> */}
+                <div className='location-name-body'>
+                    {locations.map((location) => {
+                        return <IndividualLocation id={location.id}/>
+                    })}
+                </div>
             </div>
-            <div className='location-name-body'>
-                {locations.map((location) => {
-                    return <IndividualLocation id={location.id}/>
-                })}
-            </div>
-        </div>
     }
 
     function Destinations() {
@@ -96,7 +138,7 @@ export default function Home({locations, setLocations, startLocation, setStartLo
         return <div className='pathly-destinations-body'>
             <motion.div className='pathly-start-body'>
                 <Icons.LookingGlass />
-                <SearchBox onPlaceSelected={(place) => handleLocationChange({place, start: true})}/>
+                <SearchBox onPlaceSelected={(place) => handleLocationChange({place, start: true})} start={true}/>
             </motion.div>
             <StartLocation />
             {startLocation && <Locations />}
