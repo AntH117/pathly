@@ -29,7 +29,7 @@ export default function SearchBox({ onPlaceSelected, placeholder, initialValue }
   }, [placesLib, onPlaceSelected]);
 
   return (
-    <input className='pathly-start-input' placeholder={placeholder || 'start'} ref={inputRef} value={value} onChange={(e) => setValue(e.target.value)} initialValue={initialValue}>
+    <input className='pathly-start-input' placeholder={placeholder || 'Start Location'} ref={inputRef} value={value} onChange={(e) => setValue(e.target.value)} initialValue={initialValue}>
     </input>
   );
 }

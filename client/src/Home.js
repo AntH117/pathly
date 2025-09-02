@@ -42,19 +42,22 @@ export default function Home({locations, setLocations, startLocation, setStartLo
             }))
         }
     }
+    
     function Locations({length}) {
-
+        console.log(locations)
         function IndividualLocation({id}) {
             const locationId = id
             const locationName = locations.find(item => item.id == locationId).location?.formatted_address
+
             function handleLocationDelete() {
                 setLocations(locations.filter((location) => location.id !== locationId))
                 setMarkers(markers.filter((marker) => marker.id !== locationId))
             }
+
             console.log(locations)
             return <div className='individual-location-body'>
                 <SearchBox placeholder={'Add location'} onPlaceSelected={(place) => handleLocationChange({place, locationId})} initialValue={locationName}/>
-                <div className='individual-location-cancel' onClick={() => handleLocationDelete}>
+                <div className='individual-location-cancel' onClick={() => handleLocationDelete()}>
                     <Icons.X color={'rgb(255, 169, 169)'}/>
                 </div>
             </div>
@@ -96,7 +99,7 @@ export default function Home({locations, setLocations, startLocation, setStartLo
                 <SearchBox onPlaceSelected={(place) => handleLocationChange({place, start: true})}/>
             </motion.div>
             <StartLocation />
-            <Locations />
+            {startLocation && <Locations />}
         </div>
     }
 

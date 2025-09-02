@@ -1,36 +1,20 @@
 import './Pathly.css';
 import React from 'react';
-import { Map } from '@vis.gl/react-google-maps';
 import Home from './Home';
-
-function Maps() {
-    // setting center/zoom locks the movement/zoom
-    return (
-        <div className='pathly-map-body'>
-            <span style={{width: '90%', height: '90%', borderRadius: '20px', overflow: 'hidden'}}>
-                <Map
-                    defaultZoom={12}
-                    defaultCenter={{ lat: -33.8688, lng: 151.2093 }}
-                    colorScheme='LIGHT' //Implement dark mode
-                    streetViewControl={false} //Remove street view
-                    mapTypeControl={false} //Remove satelite toggle
-                    fullscreenControl={false} //Remove full screen toggle
-                />
-            </span>
-        </div>
-    )
-}
+import Maps from './Maps';
 
 
 export default function Pathly() {
     const [locations, setLocations] = React.useState([])
     const [startLocation, setStartLocation] = React.useState(null)
     const [markers, setMarkers] = React.useState([])
-    console.log(markers)
+
+    console.log(startLocation)
+
     return <div className='pathly-body'>
         <div className='pathly-travel-body'>
             <Home locations={locations} setLocations={setLocations} startLocation={startLocation} setStartLocation={setStartLocation} markers={markers} setMarkers={setMarkers} />
         </div>
-        <Maps />
+        <Maps startLocation={startLocation} markers={markers}/>
     </div>
 }
