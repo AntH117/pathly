@@ -7,6 +7,12 @@ function PathingDirections({origin, destination, num, travelMode}) {
     const map = useMap()
     const routesLib = useMapsLibrary("routes");
     const [pathingRender, setPathingRender] = React.useState(null);
+    const travelTypes = {
+        'Car': 'DRIVING',
+        'Transit': 'TRANSIT',
+        'Walking': 'WALKING',
+        'Biking': 'BICYCLING'
+    }
 
     //Pathing option libary
     const pathingColours = [ 
@@ -42,7 +48,7 @@ function PathingDirections({origin, destination, num, travelMode}) {
           {
             origin,
             destination,
-            travelMode: routesLib.TravelMode.DRIVING, // DRIVING | WALKING | BICYCLING | TRANSIT (Change based on mode)
+            travelMode: routesLib.TravelMode[travelTypes[travelMode]], // DRIVING | WALKING | BICYCLING | TRANSIT (Change based on mode)
           },
           (result, status) => {
             if (status === "OK") {
@@ -116,6 +122,7 @@ export default function Maps({startLocation, markers, locations}) {
                                 num={i}
                                 origin={{placeId: location.place_id}}
                                 destination={{placeId: mapableLocations[i + 1].place_id}}
+                                travelMode={mapableLocations[i + 1].transportType}
                             />
                         )
                     })}

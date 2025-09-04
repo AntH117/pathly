@@ -15,7 +15,7 @@ export default function Home({locations, setLocations, startLocation, setStartLo
         </div>
     }
 
-    function handleLocationChange({place, start, locationId}) {
+    function handleLocationChange({place, start, locationId, transportType}) {
         const newMarker = {
             id: locationId || 'start',
             name: place.name,
@@ -38,16 +38,43 @@ export default function Home({locations, setLocations, startLocation, setStartLo
             setStartLocation(place)
         } else {
             setLocations(locations.map((x) => { 
-                return x.id === locationId ? {...x, location: place }: x
+                return x.id === locationId ? {...x, location: {...place, transportType} }: x
             }))
         }
     }
     
-    function Locations({length}) {
+    function Locations() {
+        
+        const transportIcons = {
+            'Car': <Icons.Car width={'80%'} height={'80%'} color={'gray'}/>,
+            'Transit': <Icons.Train width={'80%'} height={'80%'} color={'gray'}/>,
+            'Walking': <Icons.Walking width={'80%'} height={'80%'} color={'gray'}/>,
+            'Biking': <Icons.Bike width={'80%'} height={'80%'} color={'gray'}/>
+        }
+
         function IndividualLocation({id}) {
             const locationId = id
             const locationName = locations.find(item => item.id == locationId).location?.formatted_address
+            const locationExists = locations.find((l) => {
+                    return l.id === locationId
+                })?.location
+            
+            //Set selected transport type
+            const [selectedTransport, setSelectedTransport] = React.useState(
+                locationExists ? {icon: transportIcons[locationExists.transportType], name: locationExists.transportType} : {icon: transportIcons['Car'], name: 'Car'}
+            )
+            
 
+            // Set change when transport type changes
+            function handleTransportChange({icon, name}) {
+                if (locationExists) {
+                    setLocations(prevLocations  => prevLocations.map((x) => { 
+                        return x.id === locationId ? {...x, location: {...x.location, transportType: name} }: x
+                    }))
+                }
+                setSelectedTransport({icon, name})
+            }
+            console.log(selectedTransport)
             function handleLocationDelete() {
                 setLocations(locations.filter((location) => location.id !== locationId))
                 setMarkers(markers.filter((marker) => marker.id !== locationId))
@@ -68,25 +95,24 @@ export default function Home({locations, setLocations, startLocation, setStartLo
 
             function TransportSelect() {
                 const [toggleDropdown, setToggleDropDown] = React.useState(false)
-                const [selected, setSelected] = React.useState({
-                    icon: <Icons.Car width={'80%'} height={'80%'} color={'gray'}/>,
-                    name: 'Car'
-                })
 
                 function TransportDropDown() {
                     return (
                         toggleDropdown && <div className='transport-dropdown-body'>
-                            <TransportOption icon={<Icons.Car width={'80%'} height={'80%'} color={'gray'}/>} name={'Car'}/>
-                            <TransportOption icon={<Icons.Train width={'80%'} height={'80%'} color={'gray'}/>} name={'Transit'}/>
-                            <TransportOption icon={<Icons.Walking width={'80%'} height={'80%'} color={'gray'}/>} name={'Walking'}/>
-                            <TransportOption icon={<Icons.Bike width={'80%'} height={'80%'} color={'gray'}/>} name={'Biking'}/>
+                            {Object.entries(transportIcons).map(([name, icon]) => (
+                                <TransportOption
+                                    key={name}
+                                    icon={icon}
+                                    name={name}
+                                />
+                            ))}
                         </div>
                     )
                 }
 
                 function TransportOption({icon, name}) {
                     
-                    return selected.name !== name && <motion.div className='transport-option-body' onClick={() => setSelected({icon: icon, name: name})}
+                    return selectedTransport.name !== name && <motion.div className='transport-option-body' onClick={() => handleTransportChange({icon: icon, name: name})}
                     whileHover={{backgroundColor: 'rgb(226, 224, 255)'}}
                 >
                     <div className='transport-icon'>
@@ -99,9 +125,9 @@ export default function Home({locations, setLocations, startLocation, setStartLo
                 return (
                 <div className='transport-select-body' onClick={() => setToggleDropDown(!toggleDropdown)}>
                     <div className='transport-icon'>
-                        {selected.icon}
+                        {selectedTransport.icon}
                     </div>
-                    <p className='transport-name'>{selected.name}</p>
+                    <p className='transport-name'>{selectedTransport.name}</p>
                     <div className='transport-dropdown-icon'>
                         <Icons.ArrowDown width={'0.8rem'} height={'0.8rem'} color={'gray'}/>
                     </div>
@@ -116,7 +142,7 @@ export default function Home({locations, setLocations, startLocation, setStartLo
                     <div className='individual-location-transport'>
                         <TransportSelect />
                     </div>
-                    <SearchBox placeholder={'Add location'} onPlaceSelected={(place) => handleLocationChange({place, locationId})} initialValue={locationName}/>
+                    <SearchBox placeholder={'Add location'} onPlaceSelected={(place) => handleLocationChange({place, locationId, transportType: selectedTransport.name})} initialValue={locationName}/>
                 </div>
                 <div className='individual-location-cancel' onClick={() => handleLocationDelete()}>
                     <Icons.X color={'rgb(255, 169, 169)'}/>
