@@ -3,10 +3,11 @@ import './Maps.css';
 import React from 'react';
 import Icons from './Icons/Icons';
 
-function PathingDirections({origin, destination, num, travelMode}) {
+function PathingDirections({origin, destination, num, travelMode, setTravelTimes}) {
     const map = useMap()
     const routesLib = useMapsLibrary("routes");
     const [pathingRender, setPathingRender] = React.useState(null);
+
     const travelTypes = {
         'Car': 'DRIVING',
         'Transit': 'TRANSIT',
@@ -15,18 +16,19 @@ function PathingDirections({origin, destination, num, travelMode}) {
     }
 
     //Pathing option libary
-    const pathingColours = [ 
-        "#BAE7FF", // baby blue
-        "#BAFFC9", // soft green
-        "#D7BAFF", // soft purple/lavender
-        "#FFDFBA", // soft orange
-        "#FFFFBA", // soft yellow
-        "#BAE1FF", // soft blue
-        "#FFB3BA", // soft red/pink
-        "#FFBAE1", // soft magenta
-        "#BFFCC6", // minty green
-        "#FFC4BA", // peach
-    ]
+    const pathingColours = [
+        "#1F77B4", // vivid blue
+        "#FF7F0E", // bright orange
+        "#2CA02C", // green
+        "#D62728", // red
+        "#9467BD", // purple
+        "#8C564B", // brown
+        "#E377C2", // pink
+        "#7F7F7F", // grey
+        "#BCBD22", // lime/yellow-green
+        "#17BECF", // cyan
+    ];
+
     //Pathing between locations
     React.useEffect(() => {
         if (!routesLib || !map || !origin || !destination) return;
@@ -54,25 +56,35 @@ function PathingDirections({origin, destination, num, travelMode}) {
             if (status === "OK") {
               renderer.setDirections(result);
               setPathingRender(renderer);
+
+              //Get travel time
+                const route = result.routes[0];
+                const leg = route.legs[0]; 
+                const totalTimeText = leg.duration.text;
+
+            setTravelTimes(prev => {
+                const newArr = [...prev];
+                newArr[num] = totalTimeText;
+                return newArr;
+            });
+
             } else {
               console.error("Directions request failed:", status);
             }
           }
         );
-    
         return () => {
           // clean up old route if origin/destination changes
           renderer.setMap(null);
         };
       }, [routesLib, map, origin, destination]);
-
-
 }
 
 
 export default function Maps({startLocation, markers, locations}) {
     const map = useMap()
     const [mapableLocations, setMapableLocations] = React.useState([])
+    const [travelTimes, setTravelTimes] = React.useState([])
 
     function startLocationZoom() {
         const lat = startLocation.geometry.location.lat();
@@ -114,18 +126,19 @@ export default function Maps({startLocation, markers, locations}) {
 
                         /> //Show markers on the map
                     ))}
-                    {mapableLocations.map((location, i) => {
-                        if (i === mapableLocations.length - 1) return null //Skip last item in array
+                    {React.useMemo(() => mapableLocations.map((location, i) => {
+                        if (i === mapableLocations.length - 1) return null;
                         return (
-                            <PathingDirections 
+                            <PathingDirections
                                 key={i}
                                 num={i}
                                 origin={{placeId: location.place_id}}
                                 destination={{placeId: mapableLocations[i + 1].place_id}}
                                 travelMode={mapableLocations[i + 1].transportType}
+                                setTravelTimes={setTravelTimes}
                             />
                         )
-                    })}
+                    }), [mapableLocations, setTravelTimes])}
                 </Map>
             </span>
         </div>
