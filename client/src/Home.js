@@ -10,7 +10,7 @@ export default function Home({locations, setLocations, startLocation, setStartLo
     function StartLocation() {
 
         return <div className='start-location-body'>
-        <span style={{width: '10%', display: 'flex', justifyContent: 'center'}}><Icons.Location width={'22px'} height={'22px'} color={'red'}/></span>
+        <span style={{display: 'flex', justifyContent: 'center', marginRight: '1rem'}}><Icons.Location width={'22px'} height={'22px'} color={'red'}/></span>
         <span style={{width: '90%'}}><p>{startLocation?.formatted_address || 'Add location to start'}</p></span>
         </div>
     }
@@ -67,22 +67,41 @@ export default function Home({locations, setLocations, startLocation, setStartLo
             }
 
             function TransportSelect() {
+                const [toggleDropdown, setToggleDropDown] = React.useState(false)
+                const [selected, setSelected] = React.useState({
+                    icon: <Icons.Car width={'80%'} height={'80%'} color={'gray'}/>,
+                    name: 'Car'
+                })
 
                 function TransportDropDown() {
-
                     return (
-                        <div className='transport-dropdown-body'>
-                            
+                        toggleDropdown && <div className='transport-dropdown-body'>
+                            <TransportOption icon={<Icons.Car width={'80%'} height={'80%'} color={'gray'}/>} name={'Car'}/>
+                            <TransportOption icon={<Icons.Train width={'80%'} height={'80%'} color={'gray'}/>} name={'Transit'}/>
+                            <TransportOption icon={<Icons.Walking width={'80%'} height={'80%'} color={'gray'}/>} name={'Walking'}/>
+                            <TransportOption icon={<Icons.Bike width={'80%'} height={'80%'} color={'gray'}/>} name={'Biking'}/>
                         </div>
                     )
                 }
 
-                return (
-                <div className='transport-select-body'>
+                function TransportOption({icon, name}) {
+                    
+                    return selected.name !== name && <motion.div className='transport-option-body' onClick={() => setSelected({icon: icon, name: name})}
+                    whileHover={{backgroundColor: 'rgb(226, 224, 255)'}}
+                >
                     <div className='transport-icon'>
-                        <Icons.Car width={'80%'} height={'80%'} color={'gray'}/>
+                        {icon}
                     </div>
-                    <p className='transport-name'>Car</p>
+                    <p className='transport-name'>{name}</p>
+                </motion.div>
+                }
+
+                return (
+                <div className='transport-select-body' onClick={() => setToggleDropDown(!toggleDropdown)}>
+                    <div className='transport-icon'>
+                        {selected.icon}
+                    </div>
+                    <p className='transport-name'>{selected.name}</p>
                     <div className='transport-dropdown-icon'>
                         <Icons.ArrowDown width={'0.8rem'} height={'0.8rem'} color={'gray'}/>
                     </div>
@@ -112,25 +131,20 @@ export default function Home({locations, setLocations, startLocation, setStartLo
               setLocations([...locations, newItem])
         }
 
-        return <div className='pathly-locations-body'>
-            {/* <div className='location-markers'>
-                {locations.map(() => {
-                    return <div className='ring-container'>
-                        <div className='ring'></div>
-                    </div>
-                })}
-                {startLocation && <div className='ring-add-container'>
-                    <div className='ring-add' onClick={() => addLocation()}>
-                        <Icons.Plus />
-                    </div>
-                </div>}
-            </div> */}
+        return <>
+        <div className='pathly-locations-body'>
                 <div className='location-name-body'>
                     {locations.map((location) => {
                         return <IndividualLocation id={location.id}/>
                     })}
                 </div>
             </div>
+            {startLocation && <div className='ring-add-container'>
+                <div className='ring-add' onClick={() => addLocation()}>
+                    <Icons.Plus />
+                </div>
+            </div>}
+        </>
     }
 
     function Destinations() {
