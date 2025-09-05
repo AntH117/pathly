@@ -4,9 +4,10 @@ import { Map, Route, RouteMatrix, useMapsLibrary  } from '@vis.gl/react-google-m
 import { motion, setDragLock } from "motion/react"
 import Icons from './Icons/Icons';
 import SearchBox from './SearchBox';
+import { useTravelTimes } from "./TravelTimesContext";
 
 export default function Home({locations, setLocations, startLocation, setStartLocation, markers, setMarkers}) {
-
+    const { travelTimes, setTravelTimes } = useTravelTimes();
     function StartLocation() {
 
         return <div className='start-location-body'>
@@ -74,7 +75,7 @@ export default function Home({locations, setLocations, startLocation, setStartLo
                 }
                 setSelectedTransport({icon, name})
             }
-            console.log(selectedTransport)
+
             function handleLocationDelete() {
                 setLocations(locations.filter((location) => location.id !== locationId))
                 setMarkers(markers.filter((marker) => marker.id !== locationId))

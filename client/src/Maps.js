@@ -2,8 +2,9 @@ import { Map, useMap, Marker, useMapsLibrary  } from '@vis.gl/react-google-maps'
 import './Maps.css';
 import React from 'react';
 import Icons from './Icons/Icons';
+import { useTravelTimes } from "./TravelTimesContext";
 
-function PathingDirections({origin, destination, num, travelMode, setTravelTimes}) {
+function PathingDirections({origin, destination, num, travelMode, travelTimes, setTravelTimes}) {
     const map = useMap()
     const routesLib = useMapsLibrary("routes");
     const [pathingRender, setPathingRender] = React.useState(null);
@@ -50,7 +51,7 @@ function PathingDirections({origin, destination, num, travelMode, setTravelTimes
           {
             origin,
             destination,
-            travelMode: routesLib.TravelMode[travelTypes[travelMode]], // DRIVING | WALKING | BICYCLING | TRANSIT (Change based on mode)
+            travelMode: routesLib.TravelMode[travelTypes[travelMode]], // DRIVING | WALKING | BICYCLING | TRANSIT
           },
           (result, status) => {
             if (status === "OK") {
@@ -62,12 +63,33 @@ function PathingDirections({origin, destination, num, travelMode, setTravelTimes
                 const leg = route.legs[0]; 
                 const totalTimeText = leg.duration.text;
 
-            setTravelTimes(prev => {
-                const newArr = [...prev];
-                newArr[num] = totalTimeText;
-                return newArr;
-            });
+            const newTravel = {
+                origin,
+                destination,
+                totalTimeText
+            }
+            const travelExists = travelTimes.find(
+                (travel) =>
+                  travel.origin.placeId === origin.placeId &&
+                  travel.destination.placeId === destination.placeId
+              );
 
+              setTravelTimes(prev => {
+                const exists = prev.find(
+                  (t) =>
+                    t.origin.placeId === origin.placeId &&
+                    t.destination.placeId === destination.placeId
+                );
+                if (exists) {
+                  return prev.map((t) =>
+                    t.origin.placeId === origin.placeId &&
+                    t.destination.placeId === destination.placeId
+                      ? newTravel
+                      : t
+                  );
+                }
+                return [...prev, newTravel];
+              });
             } else {
               console.error("Directions request failed:", status);
             }
@@ -84,7 +106,7 @@ function PathingDirections({origin, destination, num, travelMode, setTravelTimes
 export default function Maps({startLocation, markers, locations}) {
     const map = useMap()
     const [mapableLocations, setMapableLocations] = React.useState([])
-    const [travelTimes, setTravelTimes] = React.useState([])
+    const { travelTimes, setTravelTimes } = useTravelTimes();
 
     function startLocationZoom() {
         const lat = startLocation.geometry.location.lat();
@@ -135,10 +157,11 @@ export default function Maps({startLocation, markers, locations}) {
                                 origin={{placeId: location.place_id}}
                                 destination={{placeId: mapableLocations[i + 1].place_id}}
                                 travelMode={mapableLocations[i + 1].transportType}
+                                travelTimes={travelTimes}
                                 setTravelTimes={setTravelTimes}
                             />
                         )
-                    }), [mapableLocations, setTravelTimes])}
+                    }), [mapableLocations])}
                 </Map>
             </span>
         </div>
