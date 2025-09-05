@@ -154,6 +154,7 @@
     width: 100%;
     height: 50%;
     display: flex;
+    gap: 1rem;
 }
 
 .individual-location-cancel {
@@ -232,4 +233,14 @@
     display: flex;
     flex-direction: row;
     gap: 0.3rem;
+}
+
+.location-time-taken {
+    width: fit-content;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #3e8abd;
+    font-weight: 500;
 }

@@ -45,7 +45,6 @@ export default function Home({locations, setLocations, startLocation, setStartLo
     }
     
     function Locations() {
-        
         const transportIcons = {
             'Car': <Icons.Car width={'80%'} height={'80%'} color={'gray'}/>,
             'Transit': <Icons.Train width={'80%'} height={'80%'} color={'gray'}/>,
@@ -56,10 +55,14 @@ export default function Home({locations, setLocations, startLocation, setStartLo
         function IndividualLocation({id}) {
             const locationId = id
             const locationName = locations.find(item => item.id == locationId).location?.formatted_address
+            const locationObject = locations.find(item => item.id == locationId)
             const locationExists = locations.find((l) => {
                     return l.id === locationId
                 })?.location
             
+            const locationTravelTime = travelTimes.find((t) => 
+                t.destination.placeId === locationObject.location.place_id //destination
+            )
             //Set selected transport type
             const [selectedTransport, setSelectedTransport] = React.useState(
                 locationExists ? {icon: transportIcons[locationExists.transportType], name: locationExists.transportType} : {icon: transportIcons['Car'], name: 'Car'}
@@ -79,6 +82,7 @@ export default function Home({locations, setLocations, startLocation, setStartLo
             function handleLocationDelete() {
                 setLocations(locations.filter((location) => location.id !== locationId))
                 setMarkers(markers.filter((marker) => marker.id !== locationId))
+                setTravelTimes(pre => pre.filter((t) => t.destination.placeId !== locationObject.location.place_id))
             }
 
             function Rings() {
@@ -142,6 +146,7 @@ export default function Home({locations, setLocations, startLocation, setStartLo
                 <div className='individual-location-search'>
                     <div className='individual-location-transport'>
                         <TransportSelect />
+                        <div className='location-time-taken'>{locationTravelTime?.totalTimeText}</div>
                     </div>
                     <SearchBox placeholder={'Add location'} onPlaceSelected={(place) => handleLocationChange({place, locationId, transportType: selectedTransport.name})} initialValue={locationName}/>
                 </div>
