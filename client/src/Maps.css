@@ -1,0 +1,14 @@
+.pathly-map-body {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 350px;
+}
+
+@media (max-width: 800px) {
+    .pathly-map-body {
+        width: 80%;
+    }
+  }

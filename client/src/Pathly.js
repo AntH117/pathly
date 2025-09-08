@@ -15,7 +15,7 @@ export default function Pathly() {
         <div className='pathly-travel-body'>
             <Home locations={locations} setLocations={setLocations} startLocation={startLocation} setStartLocation={setStartLocation} markers={markers} setMarkers={setMarkers} />
         </div>
-        <div className='pathly-map-body'>
+        <div className='pathly-map-outer-body'>
             <Maps startLocation={startLocation} markers={markers} locations={locations} />
         </div>
     </div>

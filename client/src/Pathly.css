@@ -17,17 +17,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    min-width: 300px;
+    min-width: 350px;
 }
 
 
-.pathly-map-body {
+.pathly-map-outer-body {
     width: 60%;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-width: 300px;
 }
 
 @media (max-width: 800px) {
@@ -37,7 +36,7 @@
     .pathly-travel-body {
         width: 80%;
     }
-    .pathly-map-body{
-        width: 80%;
+    .pathly-map-outer-body{
+        width: 100%;
     }
   }

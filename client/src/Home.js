@@ -5,6 +5,9 @@ import { motion, setDragLock } from "motion/react"
 import Icons from './Icons/Icons';
 import SearchBox from './SearchBox';
 import { useTravelTimes } from "./TravelTimesContext";
+import { Tooltip } from 'react-tooltip'
+import 'react-tooltip/dist/react-tooltip.css';
+
 
 export default function Home({locations, setLocations, startLocation, setStartLocation, markers, setMarkers}) {
     const { travelTimes, setTravelTimes } = useTravelTimes();
@@ -67,7 +70,7 @@ export default function Home({locations, setLocations, startLocation, setStartLo
                     return l.id === locationId
                 })?.location
             
-            const locationTravelTime = travelTimes.find((t) => 
+            const locationInformation = travelTimes.find((t) => 
                 t.destination.placeId === locationObject?.location?.place_id //destination
             )
             //Set selected transport type
@@ -103,6 +106,19 @@ export default function Home({locations, setLocations, startLocation, setStartLo
                     </div>
                 </div>
                 )
+            }
+
+            function LocationInfo() {
+                return <motion.div className='location-info-body'
+                    whileHover={{
+                        opacity: 1,
+                        scale: 1.1
+                    }}
+                    data-tooltip-id="my-tooltip" 
+                >
+                    <Icons.Info width={'80%'} height={'80%'} color={'rgb(122, 122, 122)'}/>
+                    <Tooltip id="my-tooltip" place="top" content={`Total distance: ${locationInformation.distance.text}`} />
+                </motion.div>
             }
 
             function TransportSelect() {
@@ -153,13 +169,18 @@ export default function Home({locations, setLocations, startLocation, setStartLo
                 <div className='individual-location-search'>
                     <div className='individual-location-transport'>
                         <TransportSelect />
-                        <div className='location-time-taken'>{locationTravelTime?.duration.text}</div>
+                        <div className='location-time-taken'>{locationInformation?.duration.text}</div>
                     </div>
                     <SearchBox placeholder={'Add location'} onPlaceSelected={(place) => handleLocationChange({place, locationId, transportType: selectedTransport.name})} initialValue={locationName}/>
                 </div>
-                <div className='individual-location-cancel' onClick={() => handleLocationDelete()}>
-                    <Icons.X color={'rgb(255, 169, 169)'}/>
-                </div>
+                <motion.div className='individual-location-cancel' onClick={() => handleLocationDelete()}
+                    whileHover={{ scale: 1.2 }}
+                    whileTap={{ scale: 0.90 }}
+
+                >
+                    <Icons.X color={'rgb(255, 169, 169)'} width={'100%'} height={'100%'}/>
+                </motion.div>
+                <LocationInfo />
             </div>
         }
 

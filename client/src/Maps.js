@@ -128,7 +128,7 @@ export default function Maps({startLocation, markers, locations}) {
     // setting center/zoom locks the movement/zoom
     return (
         <div className='pathly-map-body'>
-            <span style={{width: '90%', height: '90%', borderRadius: '20px', overflow: 'hidden'}}>
+            <span style={{width: '100%', height: '90%', borderRadius: '20px', overflow: 'hidden'}}>
                 <Map
                     defaultZoom={12}
                     defaultCenter={{ lat: -33.8688, lng: 151.2093 }}

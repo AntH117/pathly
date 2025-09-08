@@ -53,8 +53,8 @@ const ShareIcon = ({color}) => (
 </svg>
 );
 
-const XIcon = ({color}) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill={color} class="bi bi-x" viewBox="0 0 16 16">
+const XIcon = ({color, width, height}) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={width || '16'} height={height || '16'} fill={color} class="bi bi-x" viewBox="0 0 16 16">
   <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
 </svg>
 )
@@ -254,9 +254,16 @@ const TrainIcon = ({color, width, height}) => (
 </svg>
 )
 
-const BikeIcon =({color, width, height}) => (
+const BikeIcon = ({color, width, height}) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={width || '16'} height={height || '16'} fill={color} class="bi bi-bicycle" viewBox="0 0 16 16">
   <path d="M4 4.5a.5.5 0 0 1 .5-.5H6a.5.5 0 0 1 0 1v.5h4.14l.386-1.158A.5.5 0 0 1 11 4h1a.5.5 0 0 1 0 1h-.64l-.311.935.807 1.29a3 3 0 1 1-.848.53l-.508-.812-2.076 3.322A.5.5 0 0 1 8 10.5H5.959a3 3 0 1 1-1.815-3.274L5 5.856V5h-.5a.5.5 0 0 1-.5-.5m1.5 2.443-.508.814c.5.444.85 1.054.967 1.743h1.139zM8 9.057 9.598 6.5H6.402zM4.937 9.5a2 2 0 0 0-.487-.877l-.548.877zM3.603 8.092A2 2 0 1 0 4.937 10.5H3a.5.5 0 0 1-.424-.765zm7.947.53a2 2 0 1 0 .848-.53l1.026 1.643a.5.5 0 1 1-.848.53z"/>
+</svg>
+)
+
+const InfoIcon = ({color, width, height}) => (
+<svg xmlns="http://www.w3.org/2000/svg" width={width || '16'} height={height || '16'} fill={color} class="bi bi-info-circle" viewBox="0 0 16 16">
+  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+  <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
 </svg>
 )
 
@@ -300,7 +307,8 @@ const Icons = {
   Walking: WalkingIcon,
   Car: CarIcon,
   Train: TrainIcon,
-  Bike: BikeIcon
+  Bike: BikeIcon,
+  Info: InfoIcon
 };
 
 export default Icons;
