@@ -52,9 +52,23 @@ export default function Home({locations, setLocations, startLocation, setStartLo
         const [totalTripTime, setTotalTripTime] = React.useState()
         function addTripTime(array) {
             let total = 0;
-
+            for (const location of array) {
+                total += location.duration.value
+            }
+            const hours = Math.floor(total/60/60)
+            const minutes = Math.round((total/60/60) % 1 * 60)
+            if (hours === 0) {
+                setTotalTripTime(`${minutes} m`)
+            } else {
+                setTotalTripTime(`${hours} hr ${minutes} m`)
+            }
         }
-        console.log(travelTimes)
+
+        React.useEffect(() => {
+            addTripTime(travelTimes)
+        }, [travelTimes])
+
+        // console.log(travelTimes)
         const transportIcons = {
             'Car': <Icons.Car width={'80%'} height={'80%'} color={'gray'}/>,
             'Transit': <Icons.Train width={'80%'} height={'80%'} color={'gray'}/>,
@@ -78,6 +92,8 @@ export default function Home({locations, setLocations, startLocation, setStartLo
                 locationExists ? {icon: transportIcons[locationExists.transportType], name: locationExists.transportType} : {icon: transportIcons['Car'], name: 'Car'}
             )
             
+            // Set expanded info
+            const [expandInfo, setExpandInfo] = React.useState(false)
 
             // Set change when transport type changes
             function handleTransportChange({icon, name}) {
@@ -92,20 +108,53 @@ export default function Home({locations, setLocations, startLocation, setStartLo
             function handleLocationDelete() {
                 setLocations(locations.filter((location) => location.id !== locationId))
                 setMarkers(markers.filter((marker) => marker.id !== locationId))
-                setTravelTimes(pre => pre.filter((t) => t.destination.placeId !== locationObject.location.place_id))
+                setTravelTimes(pre => pre.filter((t) => t.destination.placeId !== locationObject?.location?.place_id))
             }
 
             function Rings() {
+                const [markerHeight, setMarkerHeight] = React.useState(0)
+                React.useEffect(() => {
+                    setMarkerHeight(document.getElementById('location-markers').clientHeight )
+                }, [])
+
                 return (
-                    <div className='location-markers'>
-                    <div className='ring-container'>
+                <div className='location-markers' id='location-markers'>
+                    <div className='ring-container' style={{top: 0}}>
                         <div className='ring'></div>
                     </div>
-                    <div className='ring-container'>
+                    <div className='ring-container' style={{bottom: 0}}>
                         <div className='ring'></div>
+                    </div>
+                    <div className='ring-line-container' style={{width: (markerHeight - 3 * 16)}}>
+
                     </div>
                 </div>
                 )
+            }
+            
+            function ExpandedLocationInfo() {
+
+                function IndividualLocationInfo({title, info}) {
+                    return (
+                        <div className='expanded-location-info'>
+                            {title}: <span style={{color: '#3e8abd'}}>{info}</span>
+                        </div>
+                    )
+                }
+            
+                return <div className='expanded-location-body' style={expandInfo ? {height: 'fit-content'} : {height: '1.5rem'}}>
+                    <motion.div className='expand-location-icon'
+                        whileHover={{ scale: 1.2 }}
+                        whileTap={{ scale: 0.90 }}
+                        onClick={() => setExpandInfo(!expandInfo)}
+                    >
+                        {expandInfo ? <Icons.Minus width={'100%'} height={'100%'} color={'#3e8abd'}/> : <Icons.Plus width={'100%'} height={'100%'} color={'#3e8abd'}/>}
+                    </motion.div>
+                    <div className='expanded-location-info-body'>
+                        <IndividualLocationInfo title={'Time taken'} info={locationInformation?.duration.text}/>
+                        <IndividualLocationInfo title={'Distance'} info={locationInformation?.distance.text}/>
+                    </div>
+                </div>
             }
 
             function LocationInfo() {
@@ -117,7 +166,7 @@ export default function Home({locations, setLocations, startLocation, setStartLo
                     data-tooltip-id="my-tooltip" 
                 >
                     <Icons.Info width={'80%'} height={'80%'} color={'rgb(122, 122, 122)'}/>
-                    <Tooltip id="my-tooltip" place="top" content={`Total distance: ${locationInformation.distance.text}`} />
+                    <Tooltip id="my-tooltip" place="top" content={`Total distance: ${locationInformation?.distance.text}`} />
                 </motion.div>
             }
 
@@ -169,9 +218,13 @@ export default function Home({locations, setLocations, startLocation, setStartLo
                 <div className='individual-location-search'>
                     <div className='individual-location-transport'>
                         <TransportSelect />
-                        <div className='location-time-taken'>{locationInformation?.duration.text}</div>
                     </div>
-                    <SearchBox placeholder={'Add location'} onPlaceSelected={(place) => handleLocationChange({place, locationId, transportType: selectedTransport.name})} initialValue={locationName}/>
+                    {locationInformation && <ExpandedLocationInfo />}
+                    <SearchBox placeholder={'Add location'} 
+                        onPlaceSelected={(place) => handleLocationChange({place, locationId, transportType: selectedTransport.name})} 
+                        initialValue={locationName}
+                        height={'2rem'}
+                        />
                 </div>
                 <motion.div className='individual-location-cancel' onClick={() => handleLocationDelete()}
                     whileHover={{ scale: 1.2 }}
@@ -180,7 +233,7 @@ export default function Home({locations, setLocations, startLocation, setStartLo
                 >
                     <Icons.X color={'rgb(255, 169, 169)'} width={'100%'} height={'100%'}/>
                 </motion.div>
-                <LocationInfo />
+                {/* <LocationInfo /> */}
             </div>
         }
 
@@ -205,7 +258,7 @@ export default function Home({locations, setLocations, startLocation, setStartLo
                 </div>
             </div>}
             <div className='locations-total-duration'>
-                {`Trip Time:`}
+                {`Trip Time: ${totalTripTime}`}
             </div>
         </>
     }
@@ -215,7 +268,7 @@ export default function Home({locations, setLocations, startLocation, setStartLo
         return <div className='pathly-destinations-body'>
             <motion.div className='pathly-start-body'>
                 <Icons.LookingGlass />
-                <SearchBox onPlaceSelected={(place) => handleLocationChange({place, start: true})} start={true}/>
+                <SearchBox onPlaceSelected={(place) => handleLocationChange({place, start: true})} start={true} height={'50%'}/>
             </motion.div>
             <StartLocation />
             {startLocation && <Locations />}
