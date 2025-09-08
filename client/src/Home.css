@@ -86,6 +86,7 @@
     display: flex;
     justify-content: left;
     align-items: start;
+    padding-left: 0.5rem
 }
 
 .ring {
@@ -190,11 +191,13 @@
 
 .start-location-body {
     width: 90%;
-    height: 3rem;
+    height: 2rem;
     display: flex;
     flex-direction: row;
     align-items: center;
     box-sizing: border-box;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .transport-select-body {
@@ -327,4 +330,15 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
+}
+
+/* Return trip */
+.location-return-body {
+    width: 90%;
+    height: 2rem;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
 }

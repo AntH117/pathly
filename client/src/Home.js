@@ -11,6 +11,7 @@ import 'react-tooltip/dist/react-tooltip.css';
 
 export default function Home({locations, setLocations, startLocation, setStartLocation, markers, setMarkers}) {
     const { travelTimes, setTravelTimes } = useTravelTimes();
+    const [returnTrip, setReturnTrip] = React.useState(false)
     function StartLocation() {
 
         return <div className='start-location-body'>
@@ -112,13 +113,17 @@ export default function Home({locations, setLocations, startLocation, setStartLo
             }
 
             function Rings() {
-                const [markerHeight, setMarkerHeight] = React.useState(0)
+                const [markerHeight, setMarkerHeight] = React.useState(0);
+                const containerRef = React.useRef(null);
+              
                 React.useEffect(() => {
-                    setMarkerHeight(document.getElementById('location-markers').clientHeight )
-                }, [])
+                  if (containerRef.current) {
+                    setMarkerHeight(containerRef.current.clientHeight);
+                  }
+                }, []);
 
                 return (
-                <div className='location-markers' id='location-markers'>
+                <div className='location-markers' ref={containerRef}>
                     <div className='ring-container' style={{top: 0}}>
                         <div className='ring'></div>
                     </div>
@@ -263,14 +268,28 @@ export default function Home({locations, setLocations, startLocation, setStartLo
         </>
     }
 
-    function Destinations() {
+    function ReturnTrip() {
 
+        return (
+            <div className='location-return-body'>
+            <input 
+            type="checkbox" 
+            onChange={(e) => setReturnTrip(e.target.checked)} 
+            checked={returnTrip} 
+            />
+            Return trip
+        </div>
+        )
+        
+    }
+    function Destinations() {
         return <div className='pathly-destinations-body'>
             <motion.div className='pathly-start-body'>
                 <Icons.LookingGlass />
                 <SearchBox onPlaceSelected={(place) => handleLocationChange({place, start: true})} start={true} height={'50%'}/>
             </motion.div>
             <StartLocation />
+            {locations?.length > 0 && <ReturnTrip />}
             {startLocation && <Locations />}
         </div>
     }
