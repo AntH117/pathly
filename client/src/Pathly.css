@@ -20,11 +20,24 @@
     min-width: 300px;
 }
 
+
+.pathly-map-body {
+    width: 60%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 300px;
+}
+
 @media (max-width: 800px) {
     .pathly-body {
         flex-direction: column;
     }
     .pathly-travel-body {
-        width: 50%;
+        width: 80%;
+    }
+    .pathly-map-body{
+        width: 80%;
     }
   }

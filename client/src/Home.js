@@ -45,6 +45,13 @@ export default function Home({locations, setLocations, startLocation, setStartLo
     }
     
     function Locations() {
+
+        const [totalTripTime, setTotalTripTime] = React.useState()
+        function addTripTime(array) {
+            let total = 0;
+
+        }
+        console.log(travelTimes)
         const transportIcons = {
             'Car': <Icons.Car width={'80%'} height={'80%'} color={'gray'}/>,
             'Transit': <Icons.Train width={'80%'} height={'80%'} color={'gray'}/>,
@@ -61,7 +68,7 @@ export default function Home({locations, setLocations, startLocation, setStartLo
                 })?.location
             
             const locationTravelTime = travelTimes.find((t) => 
-                t.destination.placeId === locationObject.location.place_id //destination
+                t.destination.placeId === locationObject?.location?.place_id //destination
             )
             //Set selected transport type
             const [selectedTransport, setSelectedTransport] = React.useState(
@@ -146,7 +153,7 @@ export default function Home({locations, setLocations, startLocation, setStartLo
                 <div className='individual-location-search'>
                     <div className='individual-location-transport'>
                         <TransportSelect />
-                        <div className='location-time-taken'>{locationTravelTime?.totalTimeText}</div>
+                        <div className='location-time-taken'>{locationTravelTime?.duration.text}</div>
                     </div>
                     <SearchBox placeholder={'Add location'} onPlaceSelected={(place) => handleLocationChange({place, locationId, transportType: selectedTransport.name})} initialValue={locationName}/>
                 </div>
@@ -176,6 +183,9 @@ export default function Home({locations, setLocations, startLocation, setStartLo
                     <Icons.Plus />
                 </div>
             </div>}
+            <div className='locations-total-duration'>
+                {`Trip Time:`}
+            </div>
         </>
     }
 

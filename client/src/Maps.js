@@ -61,12 +61,15 @@ function PathingDirections({origin, destination, num, travelMode, travelTimes, s
               //Get travel time
                 const route = result.routes[0];
                 const leg = route.legs[0]; 
-                const totalTimeText = leg.duration.text;
+                const duration = leg.duration;
+                const distance = leg.distance
+                console.log(leg)
 
             const newTravel = {
                 origin,
                 destination,
-                totalTimeText
+                duration,
+                distance
             }
               setTravelTimes(prev => {
                 const exists = prev.find(
