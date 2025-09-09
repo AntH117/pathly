@@ -99,7 +99,7 @@ function PathingDirections({origin, destination, num, travelMode, travelTimes, s
 }
 
 
-export default function Maps({startLocation, markers, locations}) {
+export default function Maps({startLocation, markers, locations, returnTrip}) {
     const map = useMap()
     const [mapableLocations, setMapableLocations] = React.useState([])
     const { travelTimes, setTravelTimes } = useTravelTimes();
@@ -110,19 +110,22 @@ export default function Maps({startLocation, markers, locations}) {
         map.setCenter({ lat, lng });
         map.setZoom(15);
     }
-
     // Starting location zoom
     React.useEffect(() => {
         if (startLocation) {
             startLocationZoom()
         }
     }, [startLocation])
-
+    console.log(returnTrip)
     //set mapeable locations
     React.useEffect(() => {
         const ViableLocations = locations.filter((l) => l?.location)
-        setMapableLocations([startLocation, ...ViableLocations.map(l => l.location)])
-    }, [startLocation, locations])
+        if (returnTrip) {
+          setMapableLocations([startLocation, ...ViableLocations.map(l => l.location), returnTrip])
+        } else {
+          setMapableLocations([startLocation, ...ViableLocations.map(l => l.location)])
+        }
+    }, [startLocation, locations, returnTrip])
 
     // setting center/zoom locks the movement/zoom
     return (

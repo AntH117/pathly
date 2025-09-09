@@ -1,0 +1,29 @@
+.return-location-body {
+    width: 90%;
+    height: 100%;
+    display: flex;
+    position: relative;
+    align-items: center;
+}
+
+.return-location-outer {
+    width: 90%;
+    height: fit-content;
+    display: flex;
+    margin-bottom: 0.5rem;
+}
+
+.return-location {
+    height: 2rem;
+    width: 80%;
+    display: flex;
+    align-items: center;
+}
+
+.ring.return {
+    border: 3px solid #d598f1;
+}
+
+.ring-line-container.return {
+    background-color: #d598f1;
+}

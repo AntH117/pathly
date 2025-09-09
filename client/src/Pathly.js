@@ -9,14 +9,28 @@ export default function Pathly() {
     const [startLocation, setStartLocation] = React.useState(null)
     const [markers, setMarkers] = React.useState([])
     const { travelTimes, setTravelTimes } = useTravelTimes();
-    console.log(travelTimes)
+    const [returnTrip, setReturnTrip] = React.useState()
 
     return <div className='pathly-body'>
         <div className='pathly-travel-body'>
-            <Home locations={locations} setLocations={setLocations} startLocation={startLocation} setStartLocation={setStartLocation} markers={markers} setMarkers={setMarkers} />
+            <Home 
+                locations={locations} 
+                setLocations={setLocations} 
+                startLocation={startLocation} 
+                setStartLocation={setStartLocation} 
+                markers={markers} 
+                setMarkers={setMarkers} 
+                returnTrip={returnTrip}
+                setReturnTrip={setReturnTrip}
+            />
         </div>
         <div className='pathly-map-outer-body'>
-            <Maps startLocation={startLocation} markers={markers} locations={locations} />
+            <Maps 
+                startLocation={startLocation} 
+                markers={markers} 
+                locations={locations} 
+                returnTrip={returnTrip}
+            />
         </div>
     </div>
 }
