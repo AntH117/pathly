@@ -42,7 +42,6 @@ export default function ReturnLocation({locationInformation, returnTrip, setRetu
 
         // Set expanded info
         const [expandInfo, setExpandInfo] = React.useState(false)
-        console.log(returnTrip)
         function Rings() {
             const [markerHeight, setMarkerHeight] = React.useState(0);
             const containerRef = React.useRef(null);

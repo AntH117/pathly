@@ -9,9 +9,8 @@ import { Tooltip } from 'react-tooltip'
 import 'react-tooltip/dist/react-tooltip.css';
 import ReturnLocation from './ReturnLocation';
 
-export default function Home({locations, setLocations, startLocation, setStartLocation, markers, setMarkers, returnTrip, setReturnTrip}) {
+export default function Home({locations, setLocations, startLocation, setStartLocation, markers, setMarkers, returnTrip, setReturnTrip, returnToggle, setReturnToggle}) {
     const { travelTimes, setTravelTimes } = useTravelTimes();
-    const [returnToggle, setReturnToggle] = React.useState(false)
 
     function StartLocation() {
 
@@ -68,9 +67,8 @@ export default function Home({locations, setLocations, startLocation, setStartLo
         }
 
         React.useEffect(() => {
-            addTripTime(travelTimes)
+            addTripTime(returnToggle ? travelTimes : travelTimes.filter(t => !t.return))
         }, [travelTimes])
-
 
         function addLocation() {
             const newItem = {

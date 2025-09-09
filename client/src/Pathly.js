@@ -9,6 +9,7 @@ export default function Pathly() {
     const [startLocation, setStartLocation] = React.useState(null)
     const [markers, setMarkers] = React.useState([])
     const [returnTrip, setReturnTrip] = React.useState(null)
+    const [returnToggle, setReturnToggle] = React.useState(false)
 
     return <div className='pathly-body'>
         <div className='pathly-travel-body'>
@@ -21,6 +22,8 @@ export default function Pathly() {
                 setMarkers={setMarkers} 
                 returnTrip={returnTrip}
                 setReturnTrip={setReturnTrip}
+                returnToggle={returnToggle}
+                setReturnToggle={setReturnToggle}
             />
         </div>
         <div className='pathly-map-outer-body'>
@@ -29,6 +32,7 @@ export default function Pathly() {
                 markers={markers} 
                 locations={locations} 
                 returnTrip={returnTrip}
+                returnToggle={returnToggle}
             />
         </div>
     </div>

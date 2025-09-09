@@ -4,7 +4,7 @@ import React from 'react';
 import Icons from './Icons/Icons';
 import { useTravelTimes } from "./TravelTimesContext";
 
-function PathingDirections({origin, destination, num, travelMode, travelTimes, setTravelTimes}) {
+function PathingDirections({origin, destination, num, travelMode, setTravelTimes, returnTrip}) {
     const map = useMap()
     const routesLib = useMapsLibrary("routes");
     const [pathingRender, setPathingRender] = React.useState(null);
@@ -68,7 +68,8 @@ function PathingDirections({origin, destination, num, travelMode, travelTimes, s
                 origin,
                 destination,
                 duration,
-                distance
+                distance,
+                return: returnTrip
             }
               setTravelTimes(prev => {
                 const exists = prev.find(
@@ -99,7 +100,7 @@ function PathingDirections({origin, destination, num, travelMode, travelTimes, s
 }
 
 
-export default function Maps({startLocation, markers, locations, returnTrip}) {
+export default function Maps({startLocation, markers, locations, returnTrip, returnToggle}) {
     const map = useMap()
     const [mapableLocations, setMapableLocations] = React.useState([])
     const { travelTimes, setTravelTimes } = useTravelTimes();
@@ -116,17 +117,15 @@ export default function Maps({startLocation, markers, locations, returnTrip}) {
             startLocationZoom()
         }
     }, [startLocation])
-
     //set mapeable locations
     React.useEffect(() => {
         const ViableLocations = locations.filter((l) => l?.location)
-        if (returnTrip) {
+        if (returnTrip && returnToggle) {
           setMapableLocations([startLocation, ...ViableLocations.map(l => l.location), returnTrip])
         } else {
           setMapableLocations([startLocation, ...ViableLocations.map(l => l.location)])
         }
-    }, [startLocation, locations, returnTrip])
-
+    }, [startLocation, locations, returnTrip, returnToggle])
     // setting center/zoom locks the movement/zoom
     return (
         <div className='pathly-map-body'>
@@ -158,9 +157,10 @@ export default function Maps({startLocation, markers, locations, returnTrip}) {
                                 travelMode={mapableLocations[i + 1].transportType}
                                 travelTimes={travelTimes}
                                 setTravelTimes={setTravelTimes}
+                                returnTrip={mapableLocations[i + 1]?.return}
                             />
                         )
-                    }), [mapableLocations])}
+                    }), [mapableLocations, returnToggle])}
                 </Map>
             </span>
         </div>
