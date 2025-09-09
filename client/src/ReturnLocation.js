@@ -2,8 +2,11 @@ import './ReturnLocation.css';
 import React from 'react';
 import Icons from './Icons/Icons';
 import { motion, setDragLock } from "motion/react"
+import { useTravelTimes } from "./TravelTimesContext";
 
 export default function ReturnLocation({locationInformation, returnTrip, setReturnTrip, returnToggle, startLocation}) {        
+        const { travelTimes, setTravelTimes } = useTravelTimes();
+        const returnTravel = travelTimes[travelTimes.length - 1]
         const transportIcons = {
             'Car': <Icons.Car width={'80%'} height={'80%'} color={'gray'}/>,
             'Transit': <Icons.Train width={'80%'} height={'80%'} color={'gray'}/>,
@@ -13,21 +16,33 @@ export default function ReturnLocation({locationInformation, returnTrip, setRetu
 
         //Set selected transport type
         const [selectedTransport, setSelectedTransport] = React.useState(
-            {icon: transportIcons['Car'], name: 'Car'}
-        )
-        // Setting return trip details
-
+            returnTrip?.transportType ? {icon: transportIcons[returnTrip.transportType], name: returnTrip.transportType} : { icon: transportIcons['Car'], name: 'Car' }
+          );
+          
         React.useEffect(() => {
+            if (!returnToggle || !startLocation) return;
+          
             const returnDetails = {
-                ...startLocation,
-                transportType: selectedTransport?.name || 'Car'
-            }
-            setReturnTrip(returnDetails)
-        }, [returnToggle])
-        
+              ...startLocation,
+              transportType: selectedTransport?.name || 'Car',
+              return: true
+            };
+          
+            setReturnTrip((prev) => {
+              if (
+                prev?.placeId === returnDetails.placeId &&
+                prev?.transportType === returnDetails.transportType
+              ) {
+                return prev; // no change 
+              }
+               return {...returnDetails}
+            });
+
+          }, [returnToggle, startLocation, selectedTransport]);
+
         // Set expanded info
         const [expandInfo, setExpandInfo] = React.useState(false)
-
+        console.log(returnTrip)
         function Rings() {
             const [markerHeight, setMarkerHeight] = React.useState(0);
             const containerRef = React.useRef(null);
@@ -72,8 +87,8 @@ export default function ReturnLocation({locationInformation, returnTrip, setRetu
                     {expandInfo ? <Icons.Minus width={'100%'} height={'100%'} color={'#3e8abd'}/> : <Icons.Plus width={'100%'} height={'100%'} color={'#3e8abd'}/>}
                 </motion.div>
                 <div className='expanded-location-info-body'>
-                    {/* <IndividualLocationInfo title={'Time taken'} info={locationInformation?.duration.text}/>
-                    <IndividualLocationInfo title={'Distance'} info={locationInformation?.distance.text}/> */}
+                    <IndividualLocationInfo title={'Time taken'} info={returnTravel?.duration.text}/>
+                    <IndividualLocationInfo title={'Distance'} info={returnTravel?.distance.text}/>
                 </div>
             </div>
         }
@@ -127,7 +142,7 @@ export default function ReturnLocation({locationInformation, returnTrip, setRetu
             </div>
             )
         }
-
+  
         return <div className='return-location-outer'>
             <div className='return-location-body'>
             <Rings />

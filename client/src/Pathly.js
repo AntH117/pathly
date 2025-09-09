@@ -8,8 +8,7 @@ export default function Pathly() {
     const [locations, setLocations] = React.useState([])
     const [startLocation, setStartLocation] = React.useState(null)
     const [markers, setMarkers] = React.useState([])
-    const { travelTimes, setTravelTimes } = useTravelTimes();
-    const [returnTrip, setReturnTrip] = React.useState()
+    const [returnTrip, setReturnTrip] = React.useState(null)
 
     return <div className='pathly-body'>
         <div className='pathly-travel-body'>

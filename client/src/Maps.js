@@ -46,7 +46,7 @@ function PathingDirections({origin, destination, num, travelMode, travelTimes, s
                 strokeWeight: 6,    
             }
         });
-    
+        
         directionsService.route(
           {
             origin,
@@ -116,7 +116,7 @@ export default function Maps({startLocation, markers, locations, returnTrip}) {
             startLocationZoom()
         }
     }, [startLocation])
-    console.log(returnTrip)
+
     //set mapeable locations
     React.useEffect(() => {
         const ViableLocations = locations.filter((l) => l?.location)

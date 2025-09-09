@@ -49,7 +49,7 @@ export default function Home({locations, setLocations, startLocation, setStartLo
             }))
         }
     }
-    
+
     function Locations() {
 
         const [totalTripTime, setTotalTripTime] = React.useState()
@@ -92,7 +92,14 @@ export default function Home({locations, setLocations, startLocation, setStartLo
                     <Icons.Plus />
                 </div>
             </div>}
-            {returnToggle && <ReturnLocation locationInformation={startLocation}  setReturnTrip={setReturnTrip} returnToggle={returnToggle} startLocation={startLocation}/>}
+            {returnToggle &&
+             <ReturnLocation 
+                locationInformation={startLocation}  
+                returnTrip={returnTrip}
+                setReturnTrip={setReturnTrip} 
+                returnToggle={returnToggle} 
+                startLocation={startLocation}
+             />}
             <div className='locations-total-duration'>
                 {`Trip Time: ${totalTripTime}`}
             </div>
