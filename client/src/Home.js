@@ -279,13 +279,6 @@ export default function Home({locations, setLocations, startLocation, setStartLo
         </div>
     }
 
-    // Handle return toggle
-    // React.useEffect(() => {
-    //     if (!returnToggle) {
-    //         setTravelTimes(pre => pre.filter((t) => t.destination.placeId !== startLocation?.place_id))
-    //     }
-    // }, [returnToggle])
-
     function ReturnTrip() {
 
         return (
