@@ -4,7 +4,7 @@ import React from 'react';
 import Icons from './Icons/Icons';
 import { useTravelTimes } from "./TravelTimesContext";
 
-function PathingDirections({origin, destination, num, travelMode, setTravelTimes}) {
+function PathingDirections({origin, destination, num, travelMode, setTravelTimes, returnTrip}) {
     const map = useMap()
     const routesLib = useMapsLibrary("routes");
     const [pathingRender, setPathingRender] = React.useState(null);
@@ -69,6 +69,7 @@ function PathingDirections({origin, destination, num, travelMode, setTravelTimes
                 destination,
                 duration,
                 distance,
+                return: destination.placeId === returnTrip.place_id
             }
               setTravelTimes(prev => {
                 const exists = prev.find(
@@ -166,6 +167,7 @@ export default function Maps({startLocation, markers, locations, returnTrip, ret
                                 travelMode={mapableLocations[i + 1].transportType}
                                 travelTimes={travelTimes}
                                 setTravelTimes={setTravelTimes}
+                                returnTrip={returnTrip}
                             />
                         )
                     }), [mapableLocations])}

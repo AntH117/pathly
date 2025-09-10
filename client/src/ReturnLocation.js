@@ -6,7 +6,8 @@ import { useTravelTimes } from "./TravelTimesContext";
 
 export default function ReturnLocation({locationInformation, returnTrip, setReturnTrip, returnToggle, startLocation}) {        
         const { travelTimes, setTravelTimes } = useTravelTimes();
-        const returnTravel = travelTimes.find(t => t.destination.placeId === returnTrip.place_id)
+        const returnTravel = travelTimes.find(t => t.return)
+        console.log(returnTravel)
         const transportIcons = {
             'Car': <Icons.Car width={'80%'} height={'80%'} color={'gray'}/>,
             'Transit': <Icons.Train width={'80%'} height={'80%'} color={'gray'}/>,

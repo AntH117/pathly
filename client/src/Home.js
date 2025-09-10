@@ -92,7 +92,7 @@ export default function Home({locations, setLocations, startLocation, setStartLo
               });
             }
           }, [startLocation]);
-
+  
         return <>
         <div className='pathly-locations-body'>
                 <div className='location-name-body'>
