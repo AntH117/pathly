@@ -69,7 +69,7 @@ export default function Home({locations, setLocations, startLocation, setStartLo
         React.useEffect(() => {
             addTripTime(returnToggle ? travelTimes : travelTimes.filter(t => !t.return))
         }, [travelTimes])
-
+ 
         function addLocation() {
             const newItem = {
                 id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
@@ -278,6 +278,13 @@ export default function Home({locations, setLocations, startLocation, setStartLo
             {/* <LocationInfo /> */}
         </div>
     }
+
+    // Handle return toggle
+    // React.useEffect(() => {
+    //     if (!returnToggle) {
+    //         setTravelTimes(pre => pre.filter((t) => t.destination.placeId !== startLocation?.place_id))
+    //     }
+    // }, [returnToggle])
 
     function ReturnTrip() {
 

@@ -4,7 +4,7 @@ import React from 'react';
 import Icons from './Icons/Icons';
 import { useTravelTimes } from "./TravelTimesContext";
 
-function PathingDirections({origin, destination, num, travelMode, setTravelTimes, returnTrip}) {
+function PathingDirections({origin, destination, num, travelMode, setTravelTimes}) {
     const map = useMap()
     const routesLib = useMapsLibrary("routes");
     const [pathingRender, setPathingRender] = React.useState(null);
@@ -69,7 +69,6 @@ function PathingDirections({origin, destination, num, travelMode, setTravelTimes
                 destination,
                 duration,
                 distance,
-                return: returnTrip
             }
               setTravelTimes(prev => {
                 const exists = prev.find(
@@ -117,6 +116,12 @@ export default function Maps({startLocation, markers, locations, returnTrip, ret
             startLocationZoom()
         }
     }, [startLocation])
+    
+    // Reset travel times
+    React.useEffect(() => {
+      setTravelTimes([])
+    }, [mapableLocations])
+
     //set mapeable locations
     React.useEffect(() => {
         const ViableLocations = locations.filter((l) => l?.location)
@@ -126,6 +131,7 @@ export default function Maps({startLocation, markers, locations, returnTrip, ret
           setMapableLocations([startLocation, ...ViableLocations.map(l => l.location)])
         }
     }, [startLocation, locations, returnTrip, returnToggle])
+
     // setting center/zoom locks the movement/zoom
     return (
         <div className='pathly-map-body'>
@@ -157,10 +163,9 @@ export default function Maps({startLocation, markers, locations, returnTrip, ret
                                 travelMode={mapableLocations[i + 1].transportType}
                                 travelTimes={travelTimes}
                                 setTravelTimes={setTravelTimes}
-                                returnTrip={mapableLocations[i + 1]?.return}
                             />
                         )
-                    }), [mapableLocations, returnToggle])}
+                    }), [mapableLocations])}
                 </Map>
             </span>
         </div>
