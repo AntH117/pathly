@@ -41,7 +41,9 @@ export default function Home({locations, setLocations, startLocation, setStartLo
             }
           });
         if (start) {
-            setStartLocation(place)
+            if (place) {
+                setStartLocation(place);
+            }
         } else {
             setLocations(locations.map((x) => { 
                 return x.id === locationId ? {...x, location: {...place, transportType} }: x
@@ -77,11 +79,25 @@ export default function Home({locations, setLocations, startLocation, setStartLo
               setLocations([...locations, newItem])
         }
 
+        // Set return trip location on start location change
+        React.useEffect(() => {
+            if (startLocation) {
+              setReturnTrip(prev => {
+                if (
+                  prev?.place_id === startLocation.place_id
+                ) {
+                  return prev;
+                }
+                return { ...startLocation, transportType: returnTrip?.transportType, return: true };
+              });
+            }
+          }, [startLocation]);
+
         return <>
         <div className='pathly-locations-body'>
                 <div className='location-name-body'>
                     {locations.map((location) => {
-                        return <IndividualLocation id={location.id}/>
+                        return <IndividualLocation id={location.id} key={location.id}/>
                     })}
                 </div>
             </div>
@@ -104,10 +120,8 @@ export default function Home({locations, setLocations, startLocation, setStartLo
         </>
     }
 
-
     // Individual Locations
-    function IndividualLocation({id}) {
-        
+    const IndividualLocation = React.memo(function IndividualLocation({id}) {
         const transportIcons = {
             'Car': <Icons.Car width={'80%'} height={'80%'} color={'gray'}/>,
             'Transit': <Icons.Train width={'80%'} height={'80%'} color={'gray'}/>,
@@ -148,7 +162,7 @@ export default function Home({locations, setLocations, startLocation, setStartLo
             setMarkers(markers.filter((marker) => marker.id !== locationId))
             setTravelTimes(pre => pre.filter((t) => t.destination.placeId !== locationObject?.location?.place_id))
         }
-
+        
         function Rings() {
             const [markerHeight, setMarkerHeight] = React.useState(0);
             const containerRef = React.useRef(null);
@@ -263,7 +277,7 @@ export default function Home({locations, setLocations, startLocation, setStartLo
                 </div>
                 {locationInformation && <ExpandedLocationInfo />}
                 <SearchBox placeholder={'Add location'} 
-                    onPlaceSelected={(place) => handleLocationChange({place, locationId, transportType: selectedTransport.name})} 
+                    onPlaceSelected={(place) => handleLocationChange({place, locationId, transportType: selectedTransport.name, start: false})} 
                     initialValue={locationName}
                     height={'2rem'}
                     />
@@ -277,7 +291,7 @@ export default function Home({locations, setLocations, startLocation, setStartLo
             </motion.div>
             {/* <LocationInfo /> */}
         </div>
-    }
+    })
 
     function ReturnTrip() {
 

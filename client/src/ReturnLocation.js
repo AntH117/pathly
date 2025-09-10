@@ -6,19 +6,20 @@ import { useTravelTimes } from "./TravelTimesContext";
 
 export default function ReturnLocation({locationInformation, returnTrip, setReturnTrip, returnToggle, startLocation}) {        
         const { travelTimes, setTravelTimes } = useTravelTimes();
-        const returnTravel = travelTimes[travelTimes.length - 1]
+        const returnTravel = travelTimes.find(t => t.destination.placeId === returnTrip.place_id)
         const transportIcons = {
             'Car': <Icons.Car width={'80%'} height={'80%'} color={'gray'}/>,
             'Transit': <Icons.Train width={'80%'} height={'80%'} color={'gray'}/>,
             'Walking': <Icons.Walking width={'80%'} height={'80%'} color={'gray'}/>,
             'Biking': <Icons.Bike width={'80%'} height={'80%'} color={'gray'}/>
         }
-
+        
         //Set selected transport type
         const [selectedTransport, setSelectedTransport] = React.useState(
             returnTrip?.transportType ? {icon: transportIcons[returnTrip.transportType], name: returnTrip.transportType} : { icon: transportIcons['Car'], name: 'Car' }
           );
-          
+
+
         React.useEffect(() => {
             if (!returnToggle || !startLocation) return;
           
@@ -27,7 +28,7 @@ export default function ReturnLocation({locationInformation, returnTrip, setRetu
               transportType: selectedTransport?.name || 'Car',
               return: true
             };
-          
+
             setReturnTrip((prev) => {
               if (
                 prev?.placeId === returnDetails.placeId &&
@@ -38,7 +39,7 @@ export default function ReturnLocation({locationInformation, returnTrip, setRetu
                return {...returnDetails}
             });
 
-          }, [returnToggle, startLocation, selectedTransport]);
+          }, [returnToggle, selectedTransport]);
 
         // Set expanded info
         const [expandInfo, setExpandInfo] = React.useState(false)

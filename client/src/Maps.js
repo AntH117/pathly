@@ -29,7 +29,7 @@ function PathingDirections({origin, destination, num, travelMode, setTravelTimes
         "#BCBD22", // lime/yellow-green
         "#17BECF", // cyan
     ];
-
+    
     //Pathing between locations
     React.useEffect(() => {
         if (!routesLib || !map || !origin || !destination) return;
@@ -134,7 +134,7 @@ export default function Maps({startLocation, markers, locations, returnTrip, ret
       JSON.stringify(locations.filter(l => l.location)), // Only updates if locations.location changes
        returnTrip, 
        returnToggle])
-    console.log(locations)
+
     // setting center/zoom locks the movement/zoom
     return (
         <div className='pathly-map-body'>
