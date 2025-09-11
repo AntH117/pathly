@@ -5,12 +5,18 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { createBrowserRouter, RouterProvider} from "react-router-dom";
 import {APIProvider, Map} from '@vis.gl/react-google-maps';
+import Destinations from './Destinations';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    children: [],
+    children: [
+      {
+        path: "/",
+        element: <Destinations />,
+      }
+  ],
   }])
 
 const mapAPI =  process.env.REACT_APP_GOOGLE_MAPS_API_KEY

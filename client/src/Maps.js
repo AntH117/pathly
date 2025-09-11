@@ -63,7 +63,7 @@ function PathingDirections({origin, destination, num, travelMode, setTravelTimes
                 const leg = route.legs[0]; 
                 const duration = leg.duration;
                 const distance = leg.distance
-
+        
             const newTravel = {
                 origin,
                 destination,
