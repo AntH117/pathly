@@ -107,7 +107,6 @@ export default function Destinations() {
                   });
                 }
               }, [startLocation]);
-      
             return <>
             <div className='pathly-locations-body'>
                     <div className='location-name-body'>
@@ -150,9 +149,8 @@ export default function Destinations() {
             const locationExists = locations.find((l) => {
                     return l.id === locationId
                 })?.location
-            
             const locationInformation = travelTimes.find((t) => 
-                t.destination.placeId === locationObject?.location?.place_id //destination
+                t.locationId === locationObject?.id 
             )
             //Set selected transport type
             const [selectedTransport, setSelectedTransport] = React.useState(
@@ -234,6 +232,7 @@ export default function Destinations() {
                         opacity: 1,
                     }}
                     data-tooltip-id="my-tooltip" 
+                    onClick={() => navigate(`/location/${id}`)}
                 >
                     <Icons.Info width={'80%'} height={'80%'} color={'rgb(122, 122, 122)'}/>
                     <Tooltip id="my-tooltip" place="top" content={`Add info here`} />

@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { createBrowserRouter, RouterProvider} from "react-router-dom";
 import {APIProvider, Map} from '@vis.gl/react-google-maps';
 import Destinations from './Destinations';
+import ExpandedLocation from './ExpandedLocation';
 
 const router = createBrowserRouter([
   {
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Destinations />,
+      },
+      {
+        path: '/location/:id',
+        element: <ExpandedLocation />
       }
   ],
   }])
