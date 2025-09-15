@@ -1,4 +1,61 @@
 .expanded-location-body {
     width: 100%;
-    height: 10rem;
+    height: 70rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    gap: 2rem;
+}
+
+.expanded-location-back{
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    cursor: pointer;
+}
+
+.expanded-location-destination {
+    width: 90%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    margin-top: 0.5rem;
+}
+
+.expanded-location-destination h1, p {
+    margin: 0;
+}
+
+.expanded-location-travel {
+    width: 90%;
+    height: fit-content;
+    display: flex;
+}
+
+.expanded-location-travel-instructions {
+    width: 90%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.travel-instruction-body {
+    width: 100%;
+    height: 2rem;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.travel-instruction-icon {
+    height: 100%;
+}
+
+.transit-display {
+    width: fit-content;
+    height: fit-content;
+    padding: 0.2rem 0.5rem 0.2rem 0.5rem;
 }

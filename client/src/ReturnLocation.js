@@ -3,10 +3,14 @@ import React from 'react';
 import Icons from './Icons/Icons';
 import { motion, setDragLock } from "motion/react"
 import { useTravelTimes } from "./TravelTimesContext";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { Tooltip } from 'react-tooltip'
 
 export default function ReturnLocation({locationInformation, returnTrip, setReturnTrip, returnToggle, startLocation}) {        
         const { travelTimes, setTravelTimes } = useTravelTimes();
-        const returnTravel = travelTimes.find(t => t.return)
+        const { locationId } = returnTrip
+        const returnTravel = travelTimes.find(t => t.locationId === locationId)
+        const navigate = useNavigate()
 
         const transportIcons = {
             'Car': <Icons.Car width={'80%'} height={'80%'} color={'gray'}/>,
@@ -20,14 +24,14 @@ export default function ReturnLocation({locationInformation, returnTrip, setRetu
             returnTrip?.transportType ? {icon: transportIcons[returnTrip.transportType], name: returnTrip.transportType} : { icon: transportIcons['Car'], name: 'Car' }
           );
 
-
         React.useEffect(() => {
             if (!returnToggle || !startLocation) return;
           
             const returnDetails = {
               ...startLocation,
               transportType: selectedTransport?.name || 'Car',
-              return: true
+              return: true,
+              locationId: returnTrip.locationId
             };
 
             setReturnTrip((prev) => {
@@ -143,6 +147,19 @@ export default function ReturnLocation({locationInformation, returnTrip, setRetu
             </div>
             )
         }
+
+        function LocationInfo() {
+            return <motion.div className='location-info-body'
+                whileHover={{
+                    opacity: 1,
+                }}
+                data-tooltip-id="my-tooltip" 
+                onClick={() => navigate(`/location/${locationId}`)}
+            >
+                <Icons.Info width={'80%'} height={'80%'} color={'rgb(122, 122, 122)'}/>
+                <Tooltip id="my-tooltip" place="top" content={`Add info here`} />
+            </motion.div>
+        }
   
         return <div className='return-location-outer'>
             <div className='return-location-body'>
@@ -156,7 +173,7 @@ export default function ReturnLocation({locationInformation, returnTrip, setRetu
                     {locationInformation?.formatted_address}
                 </div>
             </div>
-            {/* <LocationInfo /> */}
+            <LocationInfo />
         </div>
         </div>
 }

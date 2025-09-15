@@ -27,7 +27,7 @@ export default function Destinations() {
             returnToggle,
             setReturnToggle
           } = useOutletContext();
-          
+
         function StartLocation() {
     
             return <div className='start-location-body'>
@@ -93,8 +93,9 @@ export default function Destinations() {
                   };
                   setLocations([...locations, newItem])
             }
-    
+
             // Set return trip location on start location change
+            const returnIdRef = React.useRef(Date.now().toString() + Math.random().toString(36).substr(2, 9));
             React.useEffect(() => {
                 if (startLocation) {
                   setReturnTrip(prev => {
@@ -103,7 +104,7 @@ export default function Destinations() {
                     ) {
                       return prev;
                     }
-                    return { ...startLocation, transportType: returnTrip?.transportType, return: true };
+                    return { ...startLocation, transportType: returnTrip?.transportType, return: true, locationId: returnIdRef.current };
                   });
                 }
               }, [startLocation]);

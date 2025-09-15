@@ -45,11 +45,11 @@ function PathingDirections({origin, destination, num, travelMode, setTravelTimes
                 strokeWeight: 6,    
             }
         });
-        
+
         directionsService.route(
           {
-            origin,
-            destination,
+            origin: {placeId: origin.place_id},
+            destination: {placeId: destination.place_id},
             travelMode: routesLib.TravelMode[travelTypes[travelMode]], // DRIVING | WALKING | BICYCLING | TRANSIT
           },
           (result, status) => {
@@ -62,6 +62,7 @@ function PathingDirections({origin, destination, num, travelMode, setTravelTimes
                 const leg = route.legs[0]; 
                 const duration = leg.duration;
                 const distance = leg.distance
+                const instructions = leg?.steps
 
             const newTravel = {
                 locationId,
@@ -69,13 +70,14 @@ function PathingDirections({origin, destination, num, travelMode, setTravelTimes
                 destination,
                 duration,
                 distance,
-                return: destination.placeId === returnTrip.place_id
+                instructions,
+                return: destination.place_id === returnTrip.place_id
             }
               setTravelTimes(prev => {
                 const exists = prev.find(
                   (t) =>
                     t.origin.placeId === origin.placeId &&
-                    t.destination.placeId === destination.placeId
+                    t.destination.place_id === destination.place_id
                 );
                 if (exists) {
                   return prev.map((t) =>
@@ -145,6 +147,7 @@ export default function Maps({startLocation, markers, locations, returnTrip, ret
        returnTrip, 
        returnToggle])
     // setting center/zoom locks the movement/zoom
+
     return (
         <div className='pathly-map-body'>
             <span style={{width: '100%', height: '90%', borderRadius: '20px', overflow: 'hidden'}}>
@@ -171,8 +174,8 @@ export default function Maps({startLocation, markers, locations, returnTrip, ret
                                 key={i}
                                 num={i}
                                 locationId={mapableLocations[i + 1].locationId}
-                                origin={{placeId: location.place_id}}
-                                destination={{placeId: mapableLocations[i + 1].place_id}}
+                                origin={location}
+                                destination={ mapableLocations[i + 1]}
                                 travelMode={mapableLocations[i + 1].transportType}
                                 travelTimes={travelTimes}
                                 setTravelTimes={setTravelTimes}
