@@ -19,7 +19,7 @@ export default function ExpandedLocation() {
         } = useOutletContext();
     
     const locationTravel = travelTimes.find(t => t.locationId === locationId)
-    console.log(travelTimes)
+
 
     function TravelInstructions({info}) {
         const transportIcons = {
@@ -39,11 +39,16 @@ export default function ExpandedLocation() {
         const plainText = info.instructions.replace(/<[^>]+>/g, "");
 
         return <div className='travel-instruction-body'>
-            <div className='travel-instruction-icon'>
-                {transportIcons[info.travel_mode]}
+            <div className='travel-instruction-left-body'>
+                <div className='travel-instruction-icon'>
+                    {transportIcons[info.travel_mode]}
+                </div>
+                <span style={{maxWidth: '70%', width: 'fit-content'}}>{plainText}</span>
+                {info.travel_mode === 'TRANSIT' && <TransitDisplay name={info.transit.line?.short_name} text_color={info.transit.line?.text_color} color={info.transit.line?.color}/>}
             </div>
-            {plainText}
-            {info.travel_mode === 'TRANSIT' && <TransitDisplay name={info.transit.line?.short_name} text_color={info.transit.line?.text_color} color={info.transit.line?.color}/>}
+            <div className='travel-instruction-duration'>
+                {info.duration.text}
+            </div>
         </div>
     }
 
