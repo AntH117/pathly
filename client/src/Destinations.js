@@ -206,21 +206,21 @@ export default function Destinations() {
     
                 function IndividualLocationInfo({title, info}) {
                     return (
-                        <div className='expanded-location-info'>
+                        <div className='more-location-info'>
                             {title}: <span style={{color: '#3e8abd'}}>{info}</span>
                         </div>
                     )
                 }
             
-                return <div className='expanded-location-body' style={expandInfo ? {height: 'fit-content'} : {height: '1.5rem'}}>
-                    <motion.div className='expand-location-icon'
+                return <div className='more-location-body' style={expandInfo ? {height: 'fit-content'} : {height: '1.5rem'}}>
+                    <motion.div className='more-location-icon'
                         whileHover={{ scale: 1.2 }}
                         whileTap={{ scale: 0.90 }}
                         onClick={() => setExpandInfo(!expandInfo)}
                     >
                         {expandInfo ? <Icons.Minus width={'100%'} height={'100%'} color={'#3e8abd'}/> : <Icons.Plus width={'100%'} height={'100%'} color={'#3e8abd'}/>}
                     </motion.div>
-                    <div className='expanded-location-info-body'>
+                    <div className='more-location-info-body'>
                         <IndividualLocationInfo title={'Time taken'} info={locationInformation?.duration.text}/>
                         <IndividualLocationInfo title={'Distance'} info={locationInformation?.distance.text}/>
                     </div>
@@ -236,7 +236,7 @@ export default function Destinations() {
                     onClick={() => navigate(`/location/${id}`)}
                 >
                     <Icons.Info width={'80%'} height={'80%'} color={'rgb(122, 122, 122)'}/>
-                    <Tooltip id="my-tooltip" place="top" content={`Add info here`} />
+                    <Tooltip id="my-tooltip" place="top" content={`More info`} />
                 </motion.div>
             }
     

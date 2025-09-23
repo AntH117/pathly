@@ -263,6 +263,8 @@
     justify-content: center;
     align-items: center;
     color: #3e8abd;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 /* Location Info styling */
@@ -280,7 +282,7 @@
 }
 
 /* Expanded Location Info*/
-.expanded-location-body {
+.more-location-body {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -289,12 +291,12 @@
     margin-top: 0.5rem;
 }
 
-.expanded-location-info-body {
+.more-location-info-body {
     width: 100%;
     height: fit-content;
 }
 
-.expanded-location-info {
+.more-location-info {
     width: 100%;
     height: 1.5rem;
     display: flex;
@@ -304,7 +306,7 @@
     gap: 5px;
 }
 
-.expand-location-icon {
+.more-location-icon {
     position: absolute;
     top: 0;
     right: 0;

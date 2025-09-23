@@ -19,3 +19,10 @@
     align-items: center;
     padding-bottom: 0.5rem;
   }
+
+
+  @media (max-width: 800px) {
+    .pathly-outlet-body {
+        width: 100%;
+    }
+  }
