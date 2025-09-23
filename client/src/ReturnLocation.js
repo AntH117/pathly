@@ -9,7 +9,7 @@ import { Tooltip } from 'react-tooltip'
 export default function ReturnLocation({locationInformation, returnTrip, setReturnTrip, returnToggle, startLocation}) {        
         const { travelTimes, setTravelTimes } = useTravelTimes();
         const { locationId } = returnTrip
-        const returnTravel = travelTimes.find(t => t.locationId === locationId)
+        const returnTravel = travelTimes?.find(t => t.locationId === locationId)
         const navigate = useNavigate()
 
         const transportIcons = {
