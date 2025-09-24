@@ -58,7 +58,7 @@ export default function Destinations() {
               });
             if (start) {
                 if (place) {
-                    setStartLocation(place);
+                    setStartLocation({...place, departure_time: new Date()});
                 }
             } else {
                 setLocations(locations.map((x) => { 
@@ -66,7 +66,7 @@ export default function Destinations() {
                 }))
             }
         }
-    
+
         function Locations() {
     
             const [totalTripTime, setTotalTripTime] = React.useState()
@@ -154,7 +154,7 @@ export default function Destinations() {
             const locationInformation = travelTimes.find((t) => 
                 t.locationId === locationObject?.id 
             )
-            console.log(travelTimes)
+   
             //Set selected transport type
             const [selectedTransport, setSelectedTransport] = React.useState(
                 locationExists ? {icon: transportIcons[locationExists.transportType], name: locationExists.transportType} : {icon: transportIcons['Car'], name: 'Car'}
@@ -285,14 +285,37 @@ export default function Destinations() {
                 </div>
                 )
             }
-    
+
+            function TransitTimes() {
+                const { departureTime, arrivalTime } = locationInformation
+                const readableDep = departureTime.toLocaleString([], {
+                    // weekday: 'short',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  });
+
+                const readableArr = arrivalTime.toLocaleString([], {
+                    // weekday: 'short',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  });
+
+                return <div className='transit-times-body'>
+                    <p style={{paddingTop: '0.4rem'}}>{readableDep}</p>
+                    <p style={{paddingBottom: '0.4rem'}}>{readableArr}</p>
+                </div>
+            }
+
             return <div className='individual-location-body'>
+                {locationInformation?.departureTime ?  <TransitTimes /> : <div className='transit-replacement'></div>}
                 <Rings />
                 <div className='individual-location-search'>
+                    <div>
                     <div className='individual-location-transport'>
                         <TransportSelect />
                     </div>
                     {locationInformation && <ExpandedLocationInfo />}
+                    </div>
                     <SearchBox placeholder={'Add location'} 
                         onPlaceSelected={(place) => handleLocationChange({place, locationId, transportType: selectedTransport.name, start: false})} 
                         initialValue={locationName}

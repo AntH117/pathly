@@ -12,7 +12,7 @@ function PathingDirections({origin, destination, num, travelMode, setTravelTimes
         'Car': 'DRIVING',
         'Transit': 'TRANSIT',
         'Walking': 'WALKING',
-        'Biking': 'BICYCLING'
+        'Biking': 'BICYCLING' 
     }
 
     //Pathing option libary
@@ -51,6 +51,9 @@ function PathingDirections({origin, destination, num, travelMode, setTravelTimes
             origin: {placeId: origin.place_id},
             destination: {placeId: destination.place_id},
             travelMode: routesLib.TravelMode[travelTypes[travelMode]], // DRIVING | WALKING | BICYCLING | TRANSIT
+            transitOptions: {
+              departureTime: origin.departure_time || new Date(),
+            }
           },
           (result, status) => {
             if (status === "OK") {
@@ -61,8 +64,12 @@ function PathingDirections({origin, destination, num, travelMode, setTravelTimes
                 const route = result.routes[0];
                 const leg = route.legs[0]; 
                 const duration = leg.duration;
-                const distance = leg.distance
-                const instructions = leg?.steps
+                const distance = leg.distance;
+                const instructions = leg?.steps;
+                const departureTime = origin?.departure_time;
+
+                const tripDuration = leg.duration.value
+                const arrivalTime = travelMode === 'TRANSIT' ? leg?.departure_time?.text : new Date(departureTime.getTime() + tripDuration * 1000);
 
             const newTravel = {
                 locationId,
@@ -71,9 +78,11 @@ function PathingDirections({origin, destination, num, travelMode, setTravelTimes
                 duration,
                 distance,
                 instructions,
-                return: destination.place_id === returnTrip.place_id
+                return: destination.place_id === returnTrip.place_id,
+                arrivalTime,
+                departureTime,
             }
-      
+
               setTravelTimes(prev => {
                 const exists = prev.find(
                   (t) =>
@@ -148,7 +157,6 @@ export default function Maps({startLocation, markers, locations, returnTrip, ret
        returnTrip, 
        returnToggle])
     // setting center/zoom locks the movement/zoom
-
     return (
         <div className='pathly-map-body'>
             <span style={{width: '100%', height: '90%', borderRadius: '20px', overflow: 'hidden'}}>
