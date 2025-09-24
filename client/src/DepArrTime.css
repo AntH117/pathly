@@ -1,0 +1,105 @@
+/* Departure/Arrival times */
+.dep-arr-body {
+    width: 90%;
+    height: fit-content;
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.dep-arr-dropdown {
+    width: 9rem;
+    height: fit-content;
+    border: 1px solid rgb(207, 207, 207);
+    border-radius: 0.5rem;
+    display: flex;
+    flex-direction: row;
+    gap: 0.3rem;
+    cursor: pointer;
+    position: relative;
+    align-items: center;
+    background-color: white;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.dep-arr-icon {
+    width: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 0.5rem;
+}
+
+.dep-arr-dropdown-icon {
+    width: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dep-arr-text {
+    width: fit-content;
+}
+
+.dep-arr-dropdown-body {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 2rem;
+    border: 1px solid rgb(207, 207, 207);
+}
+
+.dep-arr-dropdown-option {
+    width: 9rem;
+    height: fit-content;
+    display: flex;
+    flex-direction: row;
+    gap: 0.3rem;
+    cursor: pointer;
+    position: relative;
+    align-items: center;
+    background-color: white;
+    justify-content: center;
+    background-color: white;
+    z-index: 99;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.time-display-body {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+}
+.time-display-time {
+    width: 6rem;
+    height: 100%;
+}
+
+.time-display-date {
+    width: 6.5rem;
+    height: 100%;
+}
+
+.time-display-date-input, .time-display-time-input{
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+    border: 1px solid rgb(207, 207, 207);
+}
+
+.time-display-date-input:focus, .time-display-time-input:focus{
+    outline: 1px solid rgb(53, 53, 53);
+}
+
+.time-display-date-input::-webkit-calendar-picker-indicator {
+    cursor: pointer; 
+  }
