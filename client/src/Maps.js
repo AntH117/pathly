@@ -73,16 +73,17 @@ function PathingDirections({origin, destination, num, travelMode, setTravelTimes
                 instructions,
                 return: destination.place_id === returnTrip.place_id
             }
+      
               setTravelTimes(prev => {
                 const exists = prev.find(
                   (t) =>
-                    t.origin.placeId === origin.placeId &&
+                    t.origin.place_id === origin.place_id &&
                     t.destination.place_id === destination.place_id
                 );
                 if (exists) {
                   return prev.map((t) =>
-                    t.origin.placeId === origin.placeId &&
-                    t.destination.placeId === destination.placeId
+                    t.origin.place_id  === origin.place_id  &&
+                    t.destination.place_id  === destination.place_id 
                       ? newTravel
                       : t
                   );

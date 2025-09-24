@@ -154,6 +154,7 @@ export default function Destinations() {
             const locationInformation = travelTimes.find((t) => 
                 t.locationId === locationObject?.id 
             )
+            console.log(travelTimes)
             //Set selected transport type
             const [selectedTransport, setSelectedTransport] = React.useState(
                 locationExists ? {icon: transportIcons[locationExists.transportType], name: locationExists.transportType} : {icon: transportIcons['Car'], name: 'Car'}
@@ -171,8 +172,6 @@ export default function Destinations() {
                 }
                 setSelectedTransport({icon, name})
             }
-            console.log(locations)
-            console.log(travelTimes)
 
             function handleLocationDelete() {
                 setLocations(locations.filter((location) => location.id !== locationId))
@@ -216,7 +215,6 @@ export default function Destinations() {
                         </div>
                     )
                 }
-            
                 return <div className='more-location-body' style={expandInfo ? {height: 'fit-content'} : {height: '1.5rem'}}>
                     <motion.div className='more-location-icon'
                         whileHover={{ scale: 1.2 }}
