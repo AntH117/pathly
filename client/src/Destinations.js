@@ -171,11 +171,15 @@ export default function Destinations() {
                 }
                 setSelectedTransport({icon, name})
             }
-    
+            console.log(locations)
+            console.log(travelTimes)
+
             function handleLocationDelete() {
                 setLocations(locations.filter((location) => location.id !== locationId))
                 setMarkers(markers.filter((marker) => marker.id !== locationId))
-                setTravelTimes(pre => pre.filter((t) => t.destination.placeId !== locationObject?.location?.place_id))
+                if (locationObject?.location) {
+                    setTravelTimes(pre => pre.filter((t) => t.locationId !== locationObject.id))
+                }
             }
             
             function Rings() {
