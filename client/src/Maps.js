@@ -4,7 +4,7 @@ import React from 'react';
 import Icons from './Icons/Icons';
 import { useTravelTimes } from "./TravelTimesContext";
 
-function PathingDirections({num, travelMode, travelTimes, setTravelTimes, returnTrip, locationId, mapableLocations}) {
+function PathingDirections({setTravelTimes, mapableLocations}) {
     const map = useMap()
     const routesLib = useMapsLibrary("routes");
     const [pathingRender, setPathingRender] = React.useState(null);
@@ -14,6 +14,7 @@ function PathingDirections({num, travelMode, travelTimes, setTravelTimes, return
         'Walking': 'WALKING',
         'Biking': 'BICYCLING' 
     }
+    const renderersRef = React.useRef([]);
 
     //Pathing option libary
     const pathingColours = [
@@ -36,15 +37,6 @@ function PathingDirections({num, travelMode, travelTimes, setTravelTimes, return
         // Set up DirectionsService + DirectionsRenderer
         const directionsService = new routesLib.DirectionsService();
         //Pathing options
-        const renderer = new routesLib.DirectionsRenderer({ 
-            map, 
-            suppressMarkers: true,
-            polylineOptions: {
-                strokeColor: pathingColours[num % pathingColours.length],
-                strokeOpacity: 0.8, 
-                strokeWeight: 6,    
-            }
-        });
 
         if (!mapableLocations.length) return;
         const newTravelTimes = [];
@@ -57,7 +49,19 @@ function PathingDirections({num, travelMode, travelTimes, setTravelTimes, return
             const destination = mapableLocations[i + 1];
       
             const travelMode = routesLib.TravelMode[travelTypes[destination.transportType]];
-            console.log('function ran')
+
+            const renderer = new routesLib.DirectionsRenderer({ 
+              map, 
+              suppressMarkers: true,
+              polylineOptions: {
+                  strokeColor: pathingColours[i % pathingColours.length],
+                  strokeOpacity: 0.8, 
+                  strokeWeight: 6,    
+              }
+          });
+          
+          renderersRef.current.push(renderer);
+          
             const result = await new Promise((resolve, reject) => {
               directionsService.route(
                 {
@@ -71,7 +75,6 @@ function PathingDirections({num, travelMode, travelTimes, setTravelTimes, return
                 (res, status) => {
                   if (status === "OK") {
                     renderer.setDirections(res);
-                    setPathingRender(renderer);
                     resolve(res)
                   } else {
                     reject(status)
@@ -79,6 +82,7 @@ function PathingDirections({num, travelMode, travelTimes, setTravelTimes, return
                 }
               );
             });
+            
             const route = result.routes[0];
             const leg = route.legs[0]; 
             const duration = leg.duration;
@@ -110,7 +114,7 @@ function PathingDirections({num, travelMode, travelTimes, setTravelTimes, return
 
         return () => {
           // clean up old route if origin/destination changes
-          renderer.setMap(null);
+          renderersRef.current.forEach(r => r.setMap(null));
         };
 
       }, [
@@ -186,22 +190,6 @@ export default function Maps({startLocation, markers, locations, returnTrip, ret
 
                         /> //Show markers on the map
                     ))}
-                    {/* {React.useMemo(() => mapableLocations.map((location, i) => {
-                        if (i === mapableLocations.length - 1) return null;
-                        return (
-                            <PathingDirections
-                                key={i}
-                                num={i}
-                                locationId={mapableLocations[i + 1].locationId}
-                                origin={location}
-                                destination={mapableLocations[i + 1]}
-                                travelMode={mapableLocations[i + 1].transportType}
-                                travelTimes={travelTimes}
-                                setTravelTimes={setTravelTimes}
-                                returnTrip={returnTrip}
-                            />
-                        )
-                    }), [mapableLocations])} */}
                       <PathingDirections
                         setTravelTimes={setTravelTimes}
                         mapableLocations={mapableLocations}
