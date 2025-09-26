@@ -12,6 +12,10 @@ export default function ReturnLocation({locationInformation, returnTrip, setRetu
         const returnTravel = travelTimes?.find(t => t.locationId === locationId)
         const navigate = useNavigate()
 
+        const returnIdRef = React.useRef(
+            Date.now().toString() + Math.random().toString(36).substr(2, 9)
+          );
+
         const transportIcons = {
             'Car': <Icons.Car width={'80%'} height={'80%'} color={'gray'}/>,
             'Transit': <Icons.Train width={'80%'} height={'80%'} color={'gray'}/>,
@@ -26,12 +30,13 @@ export default function ReturnLocation({locationInformation, returnTrip, setRetu
 
         React.useEffect(() => {
             if (!returnToggle || !startLocation) return;
-          
+
             const returnDetails = {
               ...startLocation,
               transportType: selectedTransport?.name || 'Car',
               return: true,
-              locationId: returnTrip.locationId
+              locationId: returnTrip.locationId,
+              id: returnIdRef.current
             };
 
             setReturnTrip((prev) => {
@@ -160,9 +165,32 @@ export default function ReturnLocation({locationInformation, returnTrip, setRetu
                 <Tooltip id="my-tooltip" place="top" />
             </motion.div>
         }
+
+        function TransitTimes() {
+            if (!travelTimes) return
+            const { departureTime, arrivalTime } = travelTimes?.find(t => t.locationId === returnTrip.locationId) || {};
+            if (!departureTime || !arrivalTime) return
+            const readableDep = departureTime.toLocaleString([], {
+                // weekday: 'short',
+                hour: '2-digit',
+                minute: '2-digit'
+              });
+
+            const readableArr = arrivalTime.toLocaleString([], {
+                // weekday: 'short',
+                hour: '2-digit',
+                minute: '2-digit'
+              });
+
+            return <div className='transit-times-body'>
+                <p style={{paddingTop: '0.4rem'}}>{readableDep}</p>
+                <p style={{paddingBottom: '0.4rem'}}>{readableArr}</p>
+            </div>
+        }
   
         return <div className='return-location-outer'>
             <div className='return-location-body'>
+            {locationInformation ?  <TransitTimes /> : <div className='transit-replacement'></div>}
             <Rings />
             <div className='individual-location-search'>
                 <div className='individual-location-transport'>

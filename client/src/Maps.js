@@ -4,7 +4,7 @@ import React from 'react';
 import Icons from './Icons/Icons';
 import { useTravelTimes } from "./TravelTimesContext";
 
-function PathingDirections({origin, destination, num, travelMode, setTravelTimes, returnTrip, locationId}) {
+function PathingDirections({origin, destination, num, travelMode, travelTimes, setTravelTimes, returnTrip, locationId}) {
     const map = useMap()
     const routesLib = useMapsLibrary("routes");
     const [pathingRender, setPathingRender] = React.useState(null);
@@ -46,13 +46,16 @@ function PathingDirections({origin, destination, num, travelMode, setTravelTimes
             }
         });
 
+        // Finding last arrival time
+        const lastArrival = travelTimes.find(t => t.locationId === origin.locationId)?.arrivalTime
+
         directionsService.route(
           {
             origin: {placeId: origin.place_id},
             destination: {placeId: destination.place_id},
             travelMode: routesLib.TravelMode[travelTypes[travelMode]], // DRIVING | WALKING | BICYCLING | TRANSIT
             transitOptions: {
-              departureTime: origin.departure_time || new Date(),
+              departureTime: lastArrival || new Date(),
             }
           },
           (result, status) => {
@@ -66,9 +69,8 @@ function PathingDirections({origin, destination, num, travelMode, setTravelTimes
                 const duration = leg.duration;
                 const distance = leg.distance;
                 const instructions = leg?.steps;
-                const departureTime = origin?.departure_time;
-
-                const tripDuration = leg.duration.value
+                const departureTime = lastArrival || new Date();
+                const tripDuration = leg.duration.value;
                 const arrivalTime = travelMode === 'TRANSIT' ? leg?.departure_time?.text : new Date(departureTime.getTime() + tripDuration * 1000);
 
             const newTravel = {
@@ -139,7 +141,8 @@ export default function Maps({startLocation, markers, locations, returnTrip, ret
     React.useEffect(() => {
         const ViableLocations = locations.filter((l) => l?.location)
         if (returnTrip && returnToggle) {
-          setMapableLocations([startLocation,   
+          setMapableLocations(
+          [startLocation,   
             ...ViableLocations.map(l => ({
               ...l.location, 
               locationId: l.id      
@@ -157,6 +160,7 @@ export default function Maps({startLocation, markers, locations, returnTrip, ret
        returnTrip, 
        returnToggle])
     // setting center/zoom locks the movement/zoom
+   
     return (
         <div className='pathly-map-body'>
             <span style={{width: '100%', height: '90%', borderRadius: '20px', overflow: 'hidden'}}>
@@ -184,7 +188,7 @@ export default function Maps({startLocation, markers, locations, returnTrip, ret
                                 num={i}
                                 locationId={mapableLocations[i + 1].locationId}
                                 origin={location}
-                                destination={ mapableLocations[i + 1]}
+                                destination={mapableLocations[i + 1]}
                                 travelMode={mapableLocations[i + 1].transportType}
                                 travelTimes={travelTimes}
                                 setTravelTimes={setTravelTimes}
