@@ -4,7 +4,7 @@ import React from 'react';
 import Icons from './Icons/Icons';
 import { useTravelTimes } from "./TravelTimesContext";
 
-function PathingDirections({origin, destination, num, travelMode, travelTimes, setTravelTimes, returnTrip, locationId}) {
+function PathingDirections({num, travelMode, travelTimes, setTravelTimes, returnTrip, locationId, mapableLocations}) {
     const map = useMap()
     const routesLib = useMapsLibrary("routes");
     const [pathingRender, setPathingRender] = React.useState(null);
@@ -31,7 +31,7 @@ function PathingDirections({origin, destination, num, travelMode, travelTimes, s
     
     //Pathing between locations
     React.useEffect(() => {
-        if (!routesLib || !map || !origin || !destination) return;
+        if (!routesLib || !map) return;
     
         // Set up DirectionsService + DirectionsRenderer
         const directionsService = new routesLib.DirectionsService();
@@ -46,71 +46,78 @@ function PathingDirections({origin, destination, num, travelMode, travelTimes, s
             }
         });
 
-        // Finding last arrival time
-        const lastArrival = travelTimes.find(t => t.locationId === origin.locationId)?.arrivalTime
-
-        directionsService.route(
-          {
-            origin: {placeId: origin.place_id},
-            destination: {placeId: destination.place_id},
-            travelMode: routesLib.TravelMode[travelTypes[travelMode]], // DRIVING | WALKING | BICYCLING | TRANSIT
-            transitOptions: {
-              departureTime: lastArrival || new Date(),
-            }
-          },
-          (result, status) => {
-            if (status === "OK") {
-              renderer.setDirections(result);
-              setPathingRender(renderer);
-
-              //Get travel time
-                const route = result.routes[0];
-                const leg = route.legs[0]; 
-                const duration = leg.duration;
-                const distance = leg.distance;
-                const instructions = leg?.steps;
-                const departureTime = lastArrival || new Date();
-                const tripDuration = leg.duration.value;
-                const arrivalTime = travelMode === 'TRANSIT' ? leg?.departure_time?.text : new Date(departureTime.getTime() + tripDuration * 1000);
-
-            const newTravel = {
-                locationId,
-                origin,
-                destination,
-                duration,
-                distance,
-                instructions,
-                return: destination.place_id === returnTrip.place_id,
-                arrivalTime,
-                departureTime,
-            }
-
-              setTravelTimes(prev => {
-                const exists = prev.find(
-                  (t) =>
-                    t.origin.place_id === origin.place_id &&
-                    t.destination.place_id === destination.place_id
-                );
-                if (exists) {
-                  return prev.map((t) =>
-                    t.origin.place_id  === origin.place_id  &&
-                    t.destination.place_id  === destination.place_id 
-                      ? newTravel
-                      : t
-                  );
+        if (!mapableLocations.length) return;
+        const newTravelTimes = [];
+        
+        const calculateSequentially = async () => {
+          let lastArrival = new Date(); 
+      
+          for (let i = 0; i < mapableLocations.length - 1; i++) {
+            const origin = mapableLocations[i];
+            const destination = mapableLocations[i + 1];
+      
+            const travelMode = routesLib.TravelMode[travelTypes[destination.transportType]];
+            console.log('function ran')
+            const result = await new Promise((resolve, reject) => {
+              directionsService.route(
+                {
+                  origin: {placeId: origin.place_id},
+                  destination: {placeId: destination.place_id},
+                  travelMode, // DRIVING | WALKING | BICYCLING | TRANSIT
+                  transitOptions: {
+                    departureTime: lastArrival,
+                  }
+                },
+                (res, status) => {
+                  if (status === "OK") {
+                    renderer.setDirections(res);
+                    setPathingRender(renderer);
+                    resolve(res)
+                  } else {
+                    reject(status)
+                  }
                 }
-                return [...prev, newTravel];
-              });
-            } else {
-              console.error("Directions request failed:", status);
-            }
+              );
+            });
+            const route = result.routes[0];
+            const leg = route.legs[0]; 
+            const duration = leg.duration;
+            const distance = leg.distance;
+            const instructions = leg?.steps;
+            const departureTime = lastArrival 
+            const tripDuration = leg.duration.value;
+            const arrivalTime = travelMode === 'TRANSIT' ? leg?.departure_time?.text : new Date(departureTime.getTime() + tripDuration * 1000);
+
+      
+            newTravelTimes.push({
+              locationId: destination.locationId,
+              origin,
+              destination,
+              duration,
+              distance,
+              instructions,
+              departureTime,
+              arrivalTime,
+            });
+      
+            lastArrival = arrivalTime;
           }
-        );
+      
+          setTravelTimes(newTravelTimes);
+        };
+
+        calculateSequentially()
+
         return () => {
           // clean up old route if origin/destination changes
           renderer.setMap(null);
         };
-      }, [routesLib, map, origin, destination]);
+
+      }, [
+        routesLib, 
+        map, 
+        mapableLocations, 
+      ]);
 }
 
 
@@ -136,7 +143,6 @@ export default function Maps({startLocation, markers, locations, returnTrip, ret
     React.useEffect(() => {
       setTravelTimes([])
     }, [mapableLocations])
-
     //set mapeable locations
     React.useEffect(() => {
         const ViableLocations = locations.filter((l) => l?.location)
@@ -160,7 +166,7 @@ export default function Maps({startLocation, markers, locations, returnTrip, ret
        returnTrip, 
        returnToggle])
     // setting center/zoom locks the movement/zoom
-   
+    
     return (
         <div className='pathly-map-body'>
             <span style={{width: '100%', height: '90%', borderRadius: '20px', overflow: 'hidden'}}>
@@ -180,7 +186,7 @@ export default function Maps({startLocation, markers, locations, returnTrip, ret
 
                         /> //Show markers on the map
                     ))}
-                    {React.useMemo(() => mapableLocations.map((location, i) => {
+                    {/* {React.useMemo(() => mapableLocations.map((location, i) => {
                         if (i === mapableLocations.length - 1) return null;
                         return (
                             <PathingDirections
@@ -195,7 +201,11 @@ export default function Maps({startLocation, markers, locations, returnTrip, ret
                                 returnTrip={returnTrip}
                             />
                         )
-                    }), [mapableLocations])}
+                    }), [mapableLocations])} */}
+                      <PathingDirections
+                        setTravelTimes={setTravelTimes}
+                        mapableLocations={mapableLocations}
+                    />
                 </Map>
             </span>
         </div>

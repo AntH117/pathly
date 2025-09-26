@@ -170,6 +170,7 @@ export default function ReturnLocation({locationInformation, returnTrip, setRetu
             if (!travelTimes) return
             const { departureTime, arrivalTime } = travelTimes?.find(t => t.locationId === returnTrip.locationId) || {};
             if (!departureTime || !arrivalTime) return
+
             const readableDep = departureTime.toLocaleString([], {
                 // weekday: 'short',
                 hour: '2-digit',
