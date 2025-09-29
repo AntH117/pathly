@@ -4,7 +4,7 @@ import React from 'react';
 import Icons from './Icons/Icons';
 import { useTravelTimes } from "./TravelTimesContext";
 
-function PathingDirections({setTravelTimes, mapableLocations}) {
+function PathingDirections({setTravelTimes, mapableLocations, tripLeaveTime}) {
     const map = useMap()
     const routesLib = useMapsLibrary("routes");
     const [pathingRender, setPathingRender] = React.useState(null);
@@ -29,7 +29,7 @@ function PathingDirections({setTravelTimes, mapableLocations}) {
         "#BCBD22", // lime/yellow-green
         "#17BECF", // cyan
     ];
-    
+
     //Pathing between locations
     React.useEffect(() => {
         if (!routesLib || !map) return;
@@ -42,7 +42,7 @@ function PathingDirections({setTravelTimes, mapableLocations}) {
         const newTravelTimes = [];
         
         const calculateSequentially = async () => {
-          let lastArrival = new Date(); 
+          let lastArrival = tripLeaveTime || new Date(); 
       
           for (let i = 0; i < mapableLocations.length - 1; i++) {
             const origin = mapableLocations[i];
@@ -90,8 +90,7 @@ function PathingDirections({setTravelTimes, mapableLocations}) {
             const instructions = leg?.steps;
             const departureTime = lastArrival 
             const tripDuration = leg.duration.value;
-            const arrivalTime = travelMode === 'TRANSIT' ? leg?.departure_time?.text : new Date(departureTime.getTime() + tripDuration * 1000);
-
+            const arrivalTime = travelMode === 'TRANSIT' ? leg?.arrival_time?.value : new Date(departureTime.getTime() + tripDuration * 1000);
       
             newTravelTimes.push({
               locationId: destination.locationId,
@@ -121,11 +120,12 @@ function PathingDirections({setTravelTimes, mapableLocations}) {
         routesLib, 
         map, 
         mapableLocations, 
+        tripLeaveTime
       ]);
 }
 
 
-export default function Maps({startLocation, markers, locations, returnTrip, returnToggle}) {
+export default function Maps({startLocation, markers, locations, returnTrip, returnToggle, tripLeaveTime}) {
     const map = useMap()
     const [mapableLocations, setMapableLocations] = React.useState([])
     const { travelTimes, setTravelTimes } = useTravelTimes();
@@ -193,6 +193,7 @@ export default function Maps({startLocation, markers, locations, returnTrip, ret
                       <PathingDirections
                         setTravelTimes={setTravelTimes}
                         mapableLocations={mapableLocations}
+                        tripLeaveTime={tripLeaveTime}
                     />
                 </Map>
             </span>

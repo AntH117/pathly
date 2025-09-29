@@ -26,7 +26,10 @@ export default function Destinations() {
             returnTrip,
             setReturnTrip,
             returnToggle,
-            setReturnToggle
+            setReturnToggle,
+            setTripLeaveTime,
+            depArrTime,
+            setDepArrTime
           } = useOutletContext();
 
         function StartLocation() {
@@ -354,7 +357,7 @@ export default function Destinations() {
             <SearchBox onPlaceSelected={(place) => handleLocationChange({place, start: true})} start={true} height={'50%'} initialValue={startLocation?.formatted_address}/>
         </motion.div>
         <StartLocation />
-        {startLocation && <DepArrTime />}
+        {startLocation && <DepArrTime setTripLeaveTime={setTripLeaveTime} depArrTime={depArrTime} setDepArrTime={setDepArrTime}/>}
         {locations?.length > 0 && <ReturnTrip returnTrip={returnTrip}/>}
         {startLocation && <Locations />}
     </>

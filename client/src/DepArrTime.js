@@ -16,8 +16,62 @@ import {
   } from '@mui/x-date-pickers/DatePicker';
 import dayjs from "dayjs";
 
-export default  function DepArrTime() {
-    const [depArrTime, setDepArrTime] = React.useState('Immediately')
+
+function TimeDisplay({setTripLeaveTime}) {
+    const now = dayjs();
+    const [dateTimePicker, setDateTimePicker] = React.useState({})
+
+    React.useEffect(() => {
+        setDateTimePicker({
+            date: now.format("YYYY-MM-DD"),
+            time: now.format("HH:mm")
+        })
+    }, [])
+    
+    function handleTimeChange({value, type}) {
+        setDateTimePicker(t => {
+            return {
+                ...t,
+                [type]: value
+            }
+        })
+    }
+
+    function handleBlur() {
+        const isoString = `${dateTimePicker.date}T${dateTimePicker.time}:00`
+        const fullDate = new Date(isoString);
+        setTripLeaveTime(fullDate)
+    }
+
+    return (
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <div className='time-display-body'>
+                <div className='time-display-time' >
+                    <input
+                    className='time-display-time-input'
+                        type="time"
+                        value={dateTimePicker?.time}
+                        onChange={(e) => handleTimeChange({value: e.target.value, type: 'time'})}
+                        onBlur={handleBlur}
+                        required />
+                </div>
+                <div className='time-display-date' >
+                    <input
+                        className='time-display-date-input'
+                        type="date"
+                        value={dateTimePicker?.date}
+                        onChange={(e) => handleTimeChange({value: e.target.value, type: 'date'})}
+                        onBlur={handleBlur}
+                        min={now.format("YYYY-MM-DD")}/>
+                </div>
+                
+            </div>
+        </LocalizationProvider>
+    )
+}
+
+
+export default  function DepArrTime({setTripLeaveTime, depArrTime, setDepArrTime}) {
     const [toggleDropdown, setToggleDropdown] = React.useState(false)
     const options = ['Immediately', 'Depart By', 'Arrive By']
 
@@ -35,10 +89,11 @@ export default  function DepArrTime() {
             </div>
         </div>
     }
-    
+
     function handleDropDownClick(x) {
         setDepArrTime(x)
         setToggleDropdown(false)
+        setTripLeaveTime(new Date())
     }
 
     function DropDownOption({option}) {
@@ -53,40 +108,9 @@ export default  function DepArrTime() {
         )
     }
 
-    function TimeDisplay() {
-        const now = dayjs();
-        const [dateTimePicker, setDateTimePicker] = React.useState({
-            date: now.format("YYYY-MM-DD"),
-            time: now.format("HH:mm")
-        })
-        console.log(dateTimePicker)
-
-        return (
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <div className='time-display-body'>
-                    <div className='time-display-time' >
-                        <input
-                        className='time-display-time-input'
-                            type="time"
-                            value={dateTimePicker.time}
-                            required />
-                    </div>
-                    <div className='time-display-date' >
-                        <input
-                            className='time-display-date-input'
-                            type="date"
-                            value={dateTimePicker.date}
-                            min={now.format("YYYY-MM-DD")}/>
-                    </div>
-                    
-                </div>
-            </LocalizationProvider>
-        )
-    }
-
     return <div className='dep-arr-body'>
         <DepArrDropDown time={depArrTime} />
-        {depArrTime !== 'Immediately' && <TimeDisplay />}
+        {depArrTime !== 'Immediately' && <TimeDisplay setTripLeaveTime={setTripLeaveTime}/>}
         {toggleDropdown && <div className='dep-arr-dropdown-body'>
             {options.filter(i => i !== depArrTime).map((x) => {
                 return <DropDownOption option={x}/>
