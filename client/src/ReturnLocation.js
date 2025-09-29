@@ -183,15 +183,18 @@ export default function ReturnLocation({locationInformation, returnTrip, setRetu
                 minute: '2-digit'
               });
 
-            return <div className='transit-times-body'>
+            return <>
                 <p style={{paddingTop: '0.4rem'}}>{readableDep}</p>
                 <p style={{paddingBottom: '0.4rem'}}>{readableArr}</p>
-            </div>
+            </>
+
         }
   
         return <div className='return-location-outer'>
             <div className='return-location-body'>
-            {locationInformation ?  <TransitTimes /> : <div className='transit-replacement'></div>}
+            <div className='transit-times-body'>
+                <TransitTimes />  
+            </div>
             <Rings />
             <div className='individual-location-search'>
                 <div className='individual-location-transport'>

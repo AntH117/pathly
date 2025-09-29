@@ -33,10 +33,10 @@
     .pathly-body {
         flex-direction: column;
         overflow-y: scroll;
-        height: fit-content;
     }
     .pathly-travel-body {
         width: 80%;
+        height: 80%;
     }
     .pathly-map-outer-body{
         width: 100%;

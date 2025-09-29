@@ -1,12 +1,4 @@
 
-@media (max-width: 800px) {
-    .pathly-destinations-body {
-        width: 100%;
-        max-height: 50vh;
-    }
-  }
-
-
 .pathly-start-body {
     width: 90%;
     height: 3rem;
@@ -348,3 +340,15 @@
 .transit-times-body p {
     font-size: 0.8rem;
 }
+
+
+/* Mobile port */
+
+@media (max-width: 800px) {
+    /* .transit-times-body {
+        min-height: 5rem;
+    }
+    .location-markers {
+        min-height: 5rem;
+    }     */
+  }
