@@ -4,7 +4,7 @@ import React from 'react';
 import Icons from './Icons/Icons';
 import { useTravelTimes } from "./TravelTimesContext";
 
-function PathingDirections({setTravelTimes, mapableLocations, tripLeaveTime}) {
+function PathingDirections({setTravelTimes, mapableLocations, tripLeaveTime, depArrTime}) {
     const map = useMap()
     const routesLib = useMapsLibrary("routes");
     const [pathingRender, setPathingRender] = React.useState(null);
@@ -41,7 +41,7 @@ function PathingDirections({setTravelTimes, mapableLocations, tripLeaveTime}) {
         if (!mapableLocations.length) return;
         const newTravelTimes = [];
         
-        const calculateSequentially = async () => {
+        const caclulateForward = async () => {
           let lastArrival = tripLeaveTime || new Date(); 
       
           for (let i = 0; i < mapableLocations.length - 1; i++) {
@@ -109,7 +109,79 @@ function PathingDirections({setTravelTimes, mapableLocations, tripLeaveTime}) {
           setTravelTimes(newTravelTimes);
         };
 
-        calculateSequentially()
+        const calculateBackwards = async () => {
+          let lastDeparture = tripLeaveTime || new Date(); 
+          for (let i = mapableLocations.length - 1; i > 0; i--) {
+            const origin = mapableLocations[i];
+            const destination = mapableLocations[i - 1];
+      
+            const travelMode = routesLib.TravelMode[travelTypes[origin.transportType]];
+
+            const renderer = new routesLib.DirectionsRenderer({ 
+              map, 
+              suppressMarkers: true,
+              polylineOptions: {
+                  strokeColor: pathingColours[i % pathingColours.length],
+                  strokeOpacity: 0.8, 
+                  strokeWeight: 6,    
+              }
+          });
+          
+          renderersRef.current.push(renderer);
+          
+            const result = await new Promise((resolve, reject) => {
+              directionsService.route(
+                {
+                  origin: {placeId: origin.place_id},
+                  destination: {placeId: destination.place_id},
+                  travelMode, // DRIVING | WALKING | BICYCLING | TRANSIT
+                  transitOptions: {
+                    arrivalTime: lastDeparture,
+                  }
+                },
+                (res, status) => {
+                  if (status === "OK") {
+                    renderer.setDirections(res);
+                    resolve(res)
+                  } else {
+                    reject(status)
+                  }
+                }
+              );
+            });
+            
+            const route = result.routes[0];
+            const leg = route.legs[0]; 
+            const duration = leg.duration;
+            const distance = leg.distance;
+            const instructions = leg?.steps;
+            const tripDuration = leg.duration.value;
+            const arrivalTime = lastDeparture
+            const departureTime = travelMode === 'TRANSIT' ? leg?.departure_time?.value : new Date(arrivalTime.getTime() - tripDuration * 1000);
+      
+            newTravelTimes.push({
+              locationId: origin.locationId,
+              origin,
+              destination,
+              duration,
+              distance,
+              instructions,
+              departureTime,
+              arrivalTime,
+            });
+      
+            lastDeparture = departureTime;
+          }
+      
+          setTravelTimes(newTravelTimes);
+        };
+
+
+        if (depArrTime !== 'Arrive By') {
+          caclulateForward()
+        } else if (depArrTime === 'Arrive By') {
+          calculateBackwards()
+        }
 
         return () => {
           // clean up old route if origin/destination changes
@@ -125,11 +197,11 @@ function PathingDirections({setTravelTimes, mapableLocations, tripLeaveTime}) {
 }
 
 
-export default function Maps({startLocation, markers, locations, returnTrip, returnToggle, tripLeaveTime}) {
+export default function Maps({startLocation, markers, locations, returnTrip, returnToggle, tripLeaveTime, depArrTime}) {
     const map = useMap()
     const [mapableLocations, setMapableLocations] = React.useState([])
     const { travelTimes, setTravelTimes } = useTravelTimes();
-
+    console.log(travelTimes)
     function startLocationZoom() {
         const lat = startLocation.geometry.location.lat();
         const lng = startLocation.geometry.location.lng();
@@ -194,6 +266,7 @@ export default function Maps({startLocation, markers, locations, returnTrip, ret
                         setTravelTimes={setTravelTimes}
                         mapableLocations={mapableLocations}
                         tripLeaveTime={tripLeaveTime}
+                        depArrTime={depArrTime}
                     />
                 </Map>
             </span>

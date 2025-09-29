@@ -10,8 +10,7 @@ import 'react-tooltip/dist/react-tooltip.css';
 import ReturnLocation from './ReturnLocation';
 import { Outlet } from 'react-router-dom';
 
-export default function Home({locations, setLocations, startLocation, setStartLocation, markers, setMarkers, returnTrip, setReturnTrip, returnToggle, setReturnToggle, setTripLeaveTime}) {
-    const [depArrTime, setDepArrTime] = React.useState('Immediately')
+export default function Home({locations, setLocations, startLocation, setStartLocation, markers, setMarkers, returnTrip, setReturnTrip, returnToggle, setReturnToggle, setTripLeaveTime, depArrTime, setDepArrTime}) {
     return <div className='pathly-home-body'>
         <h1>Pathly</h1>
         <div className='pathly-outlet-body'>

@@ -12,6 +12,7 @@ export default function Pathly() {
     const [returnTrip, setReturnTrip] = React.useState(null)
     const [returnToggle, setReturnToggle] = React.useState(false)
     const [tripLeaveTime, setTripLeaveTime] = React.useState()
+    const [depArrTime, setDepArrTime] = React.useState('Immediately')
 
     return <div className='pathly-body'>
         <div className='pathly-travel-body'>
@@ -27,6 +28,8 @@ export default function Pathly() {
                 returnToggle={returnToggle}
                 setReturnToggle={setReturnToggle}
                 setTripLeaveTime={setTripLeaveTime}
+                depArrTime={depArrTime}
+                setDepArrTime={setDepArrTime}
             />
         </div>
         <div className='pathly-map-outer-body'>
@@ -37,6 +40,7 @@ export default function Pathly() {
                 returnTrip={returnTrip}
                 returnToggle={returnToggle}
                 tripLeaveTime={tripLeaveTime}
+                depArrTime={depArrTime}
             />
         </div>
     </div>
