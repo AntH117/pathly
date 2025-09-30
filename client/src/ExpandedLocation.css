@@ -52,6 +52,7 @@
     flex-direction: column;
     gap: 0.5rem;
     position: relative;
+    padding-top: 0.5rem;
 }
 
 .travel-instruction-body {
@@ -83,4 +84,11 @@
     justify-content: center;
     align-items: center;
     color: rgb(62, 138, 189);
+}
+
+.travel-instruction-timestamp {
+    width: 15%;
+    height: 100%;
+    display: flex;
+    align-items: center;
 }

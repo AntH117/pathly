@@ -201,7 +201,7 @@ export default function Maps({startLocation, markers, locations, returnTrip, ret
     const map = useMap()
     const [mapableLocations, setMapableLocations] = React.useState([])
     const { travelTimes, setTravelTimes } = useTravelTimes();
-    console.log(travelTimes)
+
     function startLocationZoom() {
         const lat = startLocation.geometry.location.lat();
         const lng = startLocation.geometry.location.lng();

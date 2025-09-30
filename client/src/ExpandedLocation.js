@@ -17,11 +17,37 @@ export default function ExpandedLocation() {
     const {
         locations,
         } = useOutletContext();
-    
     const locationTravel = travelTimes.find(t => t.locationId === locationId)
 
+    // const [departureTimes, setDepartureTimes] = React.useState([])
 
-    function TravelInstructions({info}) {
+    // function findDepartureTimes() {
+    //     const departureTime = locationTravel?.departureTime
+    //     let finalTimes = [departureTime]
+    //     const instructions = locationTravel.instructions || []
+
+    //     console.log(departureTime)
+    //     for (let i = 0; i < instructions.length - 1; i++) {
+    //         const travelDuration = instructions[i].duration.value
+    //         if (instructions.transit) {
+    //             finalTimes.push(instructions.transit.departureTime)
+    //         } else {
+    //             const nextDeparture = new Date(finalTimes[i].getTime() + travelDuration * 1000)
+    //             finalTimes.push(nextDeparture)
+    //         }
+    //         setDepartureTimes(finalTimes)
+    //     }
+
+    // }
+    // React.useEffect(() => {
+    //     findDepartureTimes()
+    // }, [])
+
+
+    if (!locationTravel) return
+
+    function TravelInstructions({info, num}) {
+
         const transportIcons = {
             'DRIVING': <Icons.Car width={'80%'} height={'80%'} color={'gray'}/>,
             'TRANSIT': <Icons.Train width={'80%'} height={'80%'} color={'gray'}/>,
@@ -51,22 +77,22 @@ export default function ExpandedLocation() {
             </div>
         </div>
     }
-
-    return <div className='expanded-location-body'>
-        <div className='expanded-location-back' onClick={() => navigate('/')}>
-            <Icons.Return />
-        </div>
-        <div className='expanded-location-destination'>
-            <h1>{locationTravel?.destination.name}</h1>
-            <p style={{color: 'gray'}}>{locationTravel?.destination.formatted_address}</p>
-        </div>
-        <div className='expanded-location-travel'>
-            Travel info from <span style={{marginLeft: '0.3rem', fontWeight: 'bold'}}>{locationTravel?.origin.formatted_address}</span>:
-        </div>
-        <div className='expanded-location-travel-instructions'>
-            {locationTravel?.instructions.map(i => {
-                return <TravelInstructions info={i}/>
-            })}
-        </div>
+    console.log(locationTravel)
+    return locationTravel && <div className='expanded-location-body'>
+    <div className='expanded-location-back' onClick={() => navigate('/')}>
+        <Icons.Return />
     </div>
+    <div className='expanded-location-destination'>
+        <h1>{locationTravel?.destination.name}</h1>
+        <p style={{color: 'gray'}}>{locationTravel?.destination.formatted_address}</p>
+    </div>
+    <div className='expanded-location-travel'>
+        Travel info from <span style={{marginLeft: '0.3rem', fontWeight: 'bold'}}>{locationTravel?.origin.formatted_address}</span>:
+    </div>
+    <div className='expanded-location-travel-instructions'>
+        {locationTravel?.instructions.map((instruction, i) => {
+            return <TravelInstructions info={instruction} num={i}/>
+        })}
+    </div>
+</div>
 }
