@@ -133,7 +133,7 @@
 
 .individual-location-body {
     width: 100%;
-    height: fit-content;
+    height: 100%;
     display: flex;
     position: relative;
     align-items: center;
@@ -339,6 +339,13 @@
 
 .transit-times-body p {
     font-size: 0.8rem;
+}
+
+.drag-handle {
+    position: absolute;
+    top: 40%;
+    cursor: grab;
+    z-index: 99;
 }
 
 

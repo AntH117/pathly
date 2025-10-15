@@ -9,8 +9,12 @@ import { Tooltip } from 'react-tooltip'
 import 'react-tooltip/dist/react-tooltip.css';
 import ReturnLocation from './ReturnLocation';
 import { useNavigate, useOutletContext } from "react-router-dom";
+import { DndContext, closestCenter } from "@dnd-kit/core";
+import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities"
 
 import DepArrTime from './DepArrTime';
+import Icon from '@mui/material/Icon';
 
 export default function Destinations() {
         const navigate = useNavigate()
@@ -31,7 +35,7 @@ export default function Destinations() {
             depArrTime,
             setDepArrTime
           } = useOutletContext();
-
+          console.log(locations)
         function StartLocation() {
     
             return <div className='start-location-body'>
@@ -69,6 +73,29 @@ export default function Destinations() {
                 }))
             }
         }
+
+        function SortableItem({ id, children }) {
+            const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+            const style = {
+              transform: CSS.Transform.toString(transform),
+              transition,
+              padding: "10px",
+              margin: "4px 0",
+              background: "white",
+              borderRadius: "8px",
+              height: 'fit-content',
+              position: 'relative'
+            };
+          
+            return (
+              <div ref={setNodeRef} style={style} {...attributes}>
+                <div className="drag-handle" {...listeners}>
+                    <Icons.Drag />
+                </div>
+                {children}
+              </div>
+            );
+          }
 
         function Locations() {
     
@@ -112,12 +139,34 @@ export default function Destinations() {
                   });
                 }
               }, [startLocation]);
+
+              function handleDragEnd(event) {
+                const { active, over } = event;
+                if (active.id !== over.id) {
+                  const oldIndex = locations.findIndex(item => item.id === active.id);
+                  const newIndex = locations.findIndex(item => item.id === over.id);
+                  setLocations(arrayMove(locations, oldIndex, newIndex));
+                }
+              }
+
             return <>
             <div className='pathly-locations-body'>
                     <div className='location-name-body'>
-                        {locations.map((location) => {
-                            return <IndividualLocation id={location.id} key={location.id}/>
-                        })}
+                    <DndContext
+                        collisionDetection={closestCenter}
+                        onDragEnd={handleDragEnd}
+                        >
+                        <SortableContext
+                            items={locations.map(loc => loc.id)}
+                            strategy={verticalListSortingStrategy}
+                        >
+                            {locations.map((location) => {
+                                return <SortableItem id={location.id} key={location.id}>
+                                    <IndividualLocation id={location.id} key={location.id} />
+                                </SortableItem>
+                            })}
+                        </SortableContext>
+                    </DndContext>
                     </div>
                 </div>
                 {startLocation && <div className='ring-add-container'>
