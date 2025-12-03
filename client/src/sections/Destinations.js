@@ -12,6 +12,7 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import { DndContext, closestCenter } from "@dnd-kit/core";
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities"
+import { restrictToVerticalAxis, restrictToParentElement } from '@dnd-kit/modifiers';
 
 import DepArrTime from './DepArrTime';
 import Icon from '@mui/material/Icon';
@@ -159,6 +160,7 @@ export default function Destinations() {
                     <DndContext
                         collisionDetection={closestCenter}
                         onDragEnd={handleDragEnd}
+                        modifiers={[restrictToVerticalAxis, restrictToParentElement]}
                         >
                         <SortableContext
                             items={locations.map(loc => loc.id)}
