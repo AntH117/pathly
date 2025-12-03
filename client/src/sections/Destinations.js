@@ -75,7 +75,7 @@ export default function Destinations() {
         }
 
         function SortableItem({ id, children }) {
-            const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+            const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
             const style = {
               transform: CSS.Transform.toString(transform),
               transition,
@@ -84,7 +84,11 @@ export default function Destinations() {
               background: "white",
               borderRadius: "8px",
               height: 'fit-content',
-              position: 'relative'
+              position: 'relative',
+              border: isDragging ? '1px solid black' : '1px solid transparent',
+              transition: '0.25s border',
+              zIndex: isDragging && '99',
+              cursor: isDragging && 'grab'
             };
           
             return (
@@ -353,13 +357,18 @@ export default function Destinations() {
                   });
 
                 return <div className='transit-times-body'>
-                    <p style={{paddingTop: '0.4rem'}}>{readableDep}</p>
-                    <p style={{paddingBottom: '0.4rem'}}>{readableArr}</p>
+                    <p>{readableDep}</p>
+                    <p>{readableArr}</p>
                 </div>
             }
 
             return <div className='individual-location-body'>
-                {locationInformation?.departureTime ?  <TransitTimes /> : <div className='transit-replacement'></div>}
+                {locationInformation?.departureTime ?  <TransitTimes /> : 
+                    <div className='transit-times-body'>
+                        <p style={{paddingTop: '0.4rem'}}>--:--</p>
+                        <p style={{paddingBottom: '0.4rem'}}>--:--</p>
+                        </div>
+                }
                 <Rings />
                 <div className='individual-location-search'>
                     <div>
