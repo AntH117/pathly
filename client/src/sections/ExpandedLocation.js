@@ -1,8 +1,8 @@
 import './ExpandedLocation.css';
 import React from 'react';
 import { motion, setDragLock } from "motion/react"
-import Icons from './Icons/Icons';
-import { useTravelTimes } from "./TravelTimesContext";
+import Icons from '../icons/Icons';
+import { useTravelTimes } from '../context/TravelTimesContext';
 import { Tooltip } from 'react-tooltip'
 import 'react-tooltip/dist/react-tooltip.css';
 import { Outlet } from 'react-router-dom';

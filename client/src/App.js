@@ -1,7 +1,7 @@
 import './App.css';
-import Pathly from './Pathly';
+import Pathly from './sections/Pathly';
 import React from 'react';
-import { TravelTimesProvider } from "./TravelTimesContext";
+import { TravelTimesProvider } from './context/TravelTimesContext';
 
 
 function App() {

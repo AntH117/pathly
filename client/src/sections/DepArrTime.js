@@ -2,9 +2,9 @@ import './DepArrTime.css';
 import React from 'react';
 import { Map, Route, RouteMatrix, useMapsLibrary  } from '@vis.gl/react-google-maps';
 import { motion, setDragLock } from "motion/react"
-import Icons from './Icons/Icons';
+import Icons from '../icons/Icons';
 import SearchBox from './SearchBox';
-import { useTravelTimes } from "./TravelTimesContext";
+import { useTravelTimes } from '../context/TravelTimesContext';
 import { Tooltip } from 'react-tooltip'
 import 'react-tooltip/dist/react-tooltip.css';
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";

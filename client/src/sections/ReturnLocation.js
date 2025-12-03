@@ -1,8 +1,8 @@
 import './ReturnLocation.css';
 import React from 'react';
-import Icons from './Icons/Icons';
+import Icons from '../icons/Icons';
 import { motion, setDragLock } from "motion/react"
-import { useTravelTimes } from "./TravelTimesContext";
+import { useTravelTimes } from '../context/TravelTimesContext';
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { Tooltip } from 'react-tooltip'
 

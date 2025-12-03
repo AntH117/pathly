@@ -2,7 +2,7 @@ import './Pathly.css';
 import React from 'react';
 import Home from './Home';
 import Maps from './Maps';
-import { useTravelTimes } from "./TravelTimesContext";
+import { useTravelTimes } from '../context/TravelTimesContext';
 
 
 export default function Pathly() {
