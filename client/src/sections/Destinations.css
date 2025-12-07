@@ -343,7 +343,6 @@
 
 .drag-handle {
     position: absolute;
-    top: 40%;
     cursor: grab;
     z-index: 99;
 }

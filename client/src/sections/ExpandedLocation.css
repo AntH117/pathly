@@ -55,9 +55,14 @@
     padding-top: 0.5rem;
 }
 
+@media screen and (min-width: 801px) {
+    .expanded-location-travel-instructions {
+        max-height: 100%;
+    }
+}
+
 .travel-instruction-body {
     width: 100%;
-    min-height: 2rem;
     height: fit-content;
     display: flex;
     flex-direction: row;

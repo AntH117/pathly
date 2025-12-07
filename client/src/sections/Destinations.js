@@ -79,6 +79,8 @@ export default function Destinations() {
             const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
             const style = {
               transform: CSS.Transform.toString(transform),
+              display: 'flex',
+              alignItems: 'center',
               transition,
               padding: "10px",
               margin: "4px 0",
@@ -346,17 +348,23 @@ export default function Destinations() {
 
             function TransitTimes() {
                 const { departureTime, arrivalTime } = locationInformation
-                const readableDep = departureTime.toLocaleString([], {
+                const readableDep = departureTime ? departureTime.toLocaleString([], {
                     // weekday: 'short',
                     hour: '2-digit',
                     minute: '2-digit'
-                  });
+                  })
+                  :
+                  'Err'
+                  ;
 
-                const readableArr = arrivalTime.toLocaleString([], {
+                const readableArr = arrivalTime ? arrivalTime?.toLocaleString([], {
                     // weekday: 'short',
                     hour: '2-digit',
                     minute: '2-digit'
-                  });
+                  })
+                  :
+                  'Err'
+                  ;
 
                 return <div className='transit-times-body'>
                     <p>{readableDep}</p>

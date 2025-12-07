@@ -69,7 +69,7 @@ export default function ExpandedLocation() {
                 <div className='travel-instruction-icon'>
                     {transportIcons[info.travel_mode]}
                 </div>
-                <span style={{maxWidth: '70%', width: 'fit-content'}}>{plainText}</span>
+                <span style={{maxWidth: '70%', width: 'fit-content', height: 'fit-content'}}>{plainText}</span>
                 {info.travel_mode === 'TRANSIT' && <TransitDisplay name={info.transit.line?.short_name} text_color={info.transit.line?.text_color} color={info.transit.line?.color}/>}
             </div>
             <div className='travel-instruction-duration'>
