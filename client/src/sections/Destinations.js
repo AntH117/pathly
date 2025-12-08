@@ -14,6 +14,9 @@ import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } 
 import { CSS } from "@dnd-kit/utilities"
 import { restrictToVerticalAxis, restrictToParentElement } from '@dnd-kit/modifiers';
 
+import { TimePicker } from '@mui/x-date-pickers';
+import dayjs from 'dayjs';
+
 import DepArrTime from './DepArrTime';
 import Icon from '@mui/material/Icon';
 
@@ -366,9 +369,23 @@ export default function Destinations() {
                   'Err'
                   ;
 
+                  function TripTimePicker({defaultValue, readableValue}) {
+                    const [open, setOpen] = React.useState(false);
+                    return (
+                    <div className='time-picker-body' onClick={() => setOpen(!open)}>
+                        <p>{readableValue}</p>
+                        <TimePicker 
+                            defaultValue={dayjs(defaultValue)}
+                            sx={{position: 'absolute', opacity: 0, pointerEvents: 'none', top: '-25px'}}
+                            open={open}
+                            onClose={() => setOpen(false)} // Automatically closes the timepicker on click outside
+                        />
+                    </div>
+                    )
+                  }
                 return <div className='transit-times-body'>
-                    <p>{readableDep}</p>
-                    <p>{readableArr}</p>
+                    <TripTimePicker defaultValue={departureTime} readableValue={readableDep} />
+                    <TripTimePicker defaultValue={arrivalTime} readableValue={readableArr} />
                 </div>
             }
 
