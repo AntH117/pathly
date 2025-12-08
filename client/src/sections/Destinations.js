@@ -371,6 +371,13 @@ export default function Destinations() {
 
                   function TripTimePicker({defaultValue, readableValue}) {
                     const [open, setOpen] = React.useState(false);
+                    
+                    function handleTimeChange({newValue, type}) {
+                        setTravelTimes(prev => prev.map(t => t.locationId === locationId ? {
+                            ...t, [`${type}Time`]: newValue
+                        } : t))
+                    }
+
                     return (
                     <div className='time-picker-body' onClick={() => setOpen(!open)}>
                         <p>{readableValue}</p>
@@ -383,6 +390,7 @@ export default function Destinations() {
                     </div>
                     )
                   }
+                  
                 return <div className='transit-times-body'>
                     <TripTimePicker defaultValue={departureTime} readableValue={readableDep} />
                     <TripTimePicker defaultValue={arrivalTime} readableValue={readableArr} />
