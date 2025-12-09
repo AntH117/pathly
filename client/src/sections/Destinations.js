@@ -371,7 +371,7 @@ export default function Destinations() {
                   
                   function TripTimePicker({defaultValue, readableValue, type}) {
                     const [open, setOpen] = React.useState(false);
-                    
+                    const enabled = (type === 'departure' && (depArrTime === 'Departy By' || depArrTime === 'Immediately')) || (type === 'arrival' && depArrTime === 'Arrive By')
                     function handleTimeChange({newValue, type}) {
                         setLocations(prev => prev.map(l => l.id === locationId ? {
                             ...l, location: {...l.location, [`${type}Time`]: newValue}
@@ -379,15 +379,15 @@ export default function Destinations() {
                     }
 
                     return (
-                    <div className='time-picker-body' onClick={() => setOpen(!open)}>
+                    <div className='time-picker-body' onClick={() => setOpen(!open)} style={enabled ? {cursor: 'pointer'} : {}}>
                         <p>{readableValue}</p>
-                        <TimePicker 
+                        {enabled && <TimePicker 
                             defaultValue={dayjs(defaultValue)}
                             sx={{position: 'absolute', opacity: 0, pointerEvents: 'none', top: '-25px'}}
                             open={open}
                             onClose={() => setOpen(false)} // Automatically closes the timepicker on click outside
                             onChange={(value) => handleTimeChange({newValue: value.toDate(), type: type})}
-                        />
+                        />}
                     </div>
                     )
                   }
