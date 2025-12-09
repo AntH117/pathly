@@ -7,8 +7,29 @@ import { Tooltip } from 'react-tooltip'
 import 'react-tooltip/dist/react-tooltip.css';
 import { Outlet } from 'react-router-dom';
 import { useNavigate, useOutletContext, useLocation } from "react-router-dom";
+import dayjs from 'dayjs';
+
+function useBreakpoint(breakpoint = 800) {
+    const [isLarge, setIsLarge] = React.useState(() => window.innerWidth > breakpoint);
+
+    React.useEffect(() => {
+        const check = () => setIsLarge(window.innerWidth > breakpoint);
+        window.addEventListener("resize", check);
+        return () => window.removeEventListener("resize", check);
+    }, [breakpoint]);
+
+    return isLarge; 
+}
 
 export default function ExpandedLocation() {
+    //check for desktop
+    const isLargeScreen = useBreakpoint(900);
+    const [desktop, setDestop] = React.useState(isLargeScreen)
+    React.useEffect(() => {
+        setDestop(isLargeScreen)
+    }, [isLargeScreen])
+
+    const [departureTimes, setDepartureTimes] = React.useState(null)
     const navigate = useNavigate()
     const { pathname } = useLocation()
     const locationId = pathname.split('/').at(-1)
@@ -19,35 +40,39 @@ export default function ExpandedLocation() {
         } = useOutletContext();
     const locationTravel = travelTimes.find(t => t.locationId === locationId)
 
-    // const [departureTimes, setDepartureTimes] = React.useState([])
-
-    // function findDepartureTimes() {
-    //     const departureTime = locationTravel?.departureTime
-    //     let finalTimes = [departureTime]
-    //     const instructions = locationTravel.instructions || []
-
-    //     console.log(departureTime)
-    //     for (let i = 0; i < instructions.length - 1; i++) {
-    //         const travelDuration = instructions[i].duration.value
-    //         if (instructions.transit) {
-    //             finalTimes.push(instructions.transit.departureTime)
-    //         } else {
-    //             const nextDeparture = new Date(finalTimes[i].getTime() + travelDuration * 1000)
-    //             finalTimes.push(nextDeparture)
-    //         }
-    //         setDepartureTimes(finalTimes)
-    //     }
-
-    // }
-    // React.useEffect(() => {
-    //     findDepartureTimes()
-    // }, [])
+    React.useEffect(() => {
+        if (locationTravel) {
+            const depTimes = calculateDepartureTime(locationTravel.instructions)
+            setDepartureTimes(depTimes)
+        }
+    }, [locationTravel])
 
 
     if (!locationTravel) return
 
-    function TravelInstructions({info, num}) {
+    function calculateDepartureTime(instructions) {
+        const initialDeparture = locationTravel.departureTime; 
+        let tempDepTimes = [];
+        for (let i = 0; i < instructions.length; i++) {
+            if (instructions[i]?.transit) {
+                tempDepTimes.push(instructions[i].transit.departure_time.value);
+            } else {
+                tempDepTimes.push(null);
+            }
+        }
+        for (let j = 0; j < tempDepTimes.length; j++) {
+            if (j === 0 && tempDepTimes[j] === null) {
+                tempDepTimes[j] = initialDeparture;
+            } else if (tempDepTimes[j] === null) {
+                tempDepTimes[j] = dayjs(tempDepTimes[j - 1]).add(instructions[j - 1].duration.value, 'second').toDate();
+            }
+        }
+        return tempDepTimes;
+    }
 
+
+
+    function TravelInstructions({info, num}) {
         const transportIcons = {
             'DRIVING': <Icons.Car width={'80%'} height={'80%'} color={'gray'}/>,
             'TRANSIT': <Icons.Train width={'80%'} height={'80%'} color={'gray'}/>,
@@ -65,6 +90,9 @@ export default function ExpandedLocation() {
         const plainText = info.instructions.replace(/<[^>]+>/g, "");
 
         return <div className='travel-instruction-body'>
+                <div className='travel-instruction-time'>
+                    {departureTimes ? departureTimes[num].toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}
+                </div>
             <div className='travel-instruction-left-body'>
                 <div className='travel-instruction-icon'>
                     {transportIcons[info.travel_mode]}
@@ -72,12 +100,12 @@ export default function ExpandedLocation() {
                 <span style={{maxWidth: '70%', width: 'fit-content', height: 'fit-content'}}>{plainText}</span>
                 {info.travel_mode === 'TRANSIT' && <TransitDisplay name={info.transit.line?.short_name} text_color={info.transit.line?.text_color} color={info.transit.line?.color}/>}
             </div>
-            <div className='travel-instruction-duration'>
+            {desktop && <div className='travel-instruction-duration'>
                 {info.duration.text}
-            </div>
+            </div>}
         </div>
     }
-    console.log(locationTravel)
+
     return locationTravel && <div className='expanded-location-body'>
     <div className='expanded-location-back' onClick={() => navigate('/')}>
         <Icons.Return />

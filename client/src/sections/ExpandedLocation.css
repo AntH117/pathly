@@ -55,12 +55,6 @@
     padding-top: 0.5rem;
 }
 
-@media screen and (min-width: 801px) {
-    .expanded-location-travel-instructions {
-        max-height: 100%;
-    }
-}
-
 .travel-instruction-body {
     width: 100%;
     height: fit-content;
@@ -69,7 +63,30 @@
     gap: 0.5rem;
     align-items: center;
     justify-content: space-between;
+    font-size: 0.9rem;
 }
+
+.travel-instruction-time {
+    width: 20%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    color: rgb(62, 138, 189);
+    font-size: 0.9rem;
+}
+
+@media (min-width: 800px) {
+    .expanded-location-travel-instructions {
+        max-height: 100%;
+    }
+    .travel-instruction-time {
+        font-size: 1rem;
+    }
+    .travel-instruction-body {
+        font-size: 1rem;
+    }
+}
+
 
 .travel-instruction-icon {
     height: 100%;
@@ -83,7 +100,7 @@
 }
 
 .travel-instruction-duration {
-    width: 4rem;
+    width: 20%;
     height: 100%;
     display: flex;
     justify-content: center;

@@ -39,7 +39,7 @@ export default function Destinations() {
             depArrTime,
             setDepArrTime
           } = useOutletContext();
-          console.log(locations)
+
         function StartLocation() {
     
             return <div className='start-location-body'>
@@ -369,7 +369,7 @@ export default function Destinations() {
                   'Err'
                   ;
 
-                  function TripTimePicker({defaultValue, readableValue}) {
+                  function TripTimePicker({defaultValue, readableValue, type}) {
                     const [open, setOpen] = React.useState(false);
                     
                     function handleTimeChange({newValue, type}) {
@@ -386,14 +386,15 @@ export default function Destinations() {
                             sx={{position: 'absolute', opacity: 0, pointerEvents: 'none', top: '-25px'}}
                             open={open}
                             onClose={() => setOpen(false)} // Automatically closes the timepicker on click outside
+                            onChange={(value) => handleTimeChange({newValue: value.toDate(), type: type})}
                         />
                     </div>
                     )
                   }
                   
                 return <div className='transit-times-body'>
-                    <TripTimePicker defaultValue={departureTime} readableValue={readableDep} />
-                    <TripTimePicker defaultValue={arrivalTime} readableValue={readableArr} />
+                    <TripTimePicker defaultValue={departureTime} readableValue={readableDep} type={'departure'} />
+                    <TripTimePicker defaultValue={arrivalTime} readableValue={readableArr} type={'arrival'}/>
                 </div>
             }
 
