@@ -3,6 +3,7 @@ import './Maps.css';
 import React from 'react';
 import Icons from '../icons/Icons';
 import { useTravelTimes } from '../context/TravelTimesContext';
+import dayjs from 'dayjs';
 
 function PathingDirections({setTravelTimes, mapableLocations, tripLeaveTime, depArrTime}) {
     const map = useMap()
@@ -69,7 +70,11 @@ function PathingDirections({setTravelTimes, mapableLocations, tripLeaveTime, dep
                   destination: {placeId: destination.place_id},
                   travelMode, // DRIVING | WALKING | BICYCLING | TRANSIT
                   transitOptions: {
-                    departureTime: lastArrival,
+                    departureTime:
+                      destination.departureTime &&
+                      dayjs(destination.departureTime).isAfter(dayjs(lastArrival))
+                        ? destination.departureTime
+                        : lastArrival
                   }
                 },
                 (res, status) => {
@@ -88,7 +93,7 @@ function PathingDirections({setTravelTimes, mapableLocations, tripLeaveTime, dep
             const duration = leg.duration;
             const distance = leg.distance;
             const instructions = leg?.steps;
-            const departureTime = lastArrival 
+            const departureTime = dayjs(destination.departureTime).isAfter(dayjs(lastArrival)) ? destination.departureTime : lastArrival
             const tripDuration = leg.duration.value;
             const arrivalTime = travelMode === 'TRANSIT' ? leg?.arrival_time?.value : new Date(departureTime.getTime() + tripDuration * 1000);
       
@@ -136,7 +141,7 @@ function PathingDirections({setTravelTimes, mapableLocations, tripLeaveTime, dep
                   destination: {placeId: destination.place_id},
                   travelMode, // DRIVING | WALKING | BICYCLING | TRANSIT
                   transitOptions: {
-                    arrivalTime: lastDeparture,
+                    arrivalTime: destination.arrivalTime|| lastDeparture,
                   }
                 },
                 (res, status) => {
@@ -156,7 +161,7 @@ function PathingDirections({setTravelTimes, mapableLocations, tripLeaveTime, dep
             const distance = leg.distance;
             const instructions = leg?.steps;
             const tripDuration = leg.duration.value;
-            const arrivalTime = lastDeparture
+            const arrivalTime = destination.arrivalTime|| lastDeparture
             const departureTime = travelMode === 'TRANSIT' ? leg?.departure_time?.value : new Date(arrivalTime.getTime() - tripDuration * 1000);
       
             newTravelTimes.push({

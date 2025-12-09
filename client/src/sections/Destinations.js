@@ -73,7 +73,7 @@ export default function Destinations() {
                 }
             } else {
                 setLocations(locations.map((x) => { 
-                    return x.id === locationId ? {...x, location: {...place, transportType} }: x
+                    return x.id === locationId ? {...x, location: {...place, transportType, departureTime: null, arrivalTime: null} }: x
                 }))
             }
         }
@@ -368,14 +368,14 @@ export default function Destinations() {
                   :
                   'Err'
                   ;
-
+                  
                   function TripTimePicker({defaultValue, readableValue, type}) {
                     const [open, setOpen] = React.useState(false);
                     
                     function handleTimeChange({newValue, type}) {
-                        setTravelTimes(prev => prev.map(t => t.locationId === locationId ? {
-                            ...t, [`${type}Time`]: newValue
-                        } : t))
+                        setLocations(prev => prev.map(l => l.id === locationId ? {
+                            ...l, location: {...l.location, [`${type}Time`]: newValue}
+                        } : l))
                     }
 
                     return (
