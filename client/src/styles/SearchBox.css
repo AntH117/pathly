@@ -1,0 +1,6 @@
+/* Styles for the Google Places Autocomplete dropdown */
+.pac-container {
+  border: none !important;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.15); /* optional nice shadow */
+  border-radius: 8px !important;
+}

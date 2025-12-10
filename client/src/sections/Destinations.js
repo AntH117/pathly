@@ -13,8 +13,10 @@ import { DndContext, closestCenter } from "@dnd-kit/core";
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities"
 import { restrictToVerticalAxis, restrictToParentElement } from '@dnd-kit/modifiers';
+import PopUps from '../reuseable/PopUps';
 
 import { TimePicker } from '@mui/x-date-pickers';
+import { DesktopDatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 
 import DepArrTime from './DepArrTime';
@@ -373,20 +375,32 @@ export default function Destinations() {
                     const [open, setOpen] = React.useState(false);
                     const enabled = (type === 'departure' && (depArrTime === 'Departy By' || depArrTime === 'Immediately')) || (type === 'arrival' && depArrTime === 'Arrive By')
                     function handleTimeChange({newValue, type}) {
+                        const now = new Date();
+                        if (dayjs(newValue).isBefore(now)) {
+                            PopUps.ErrorPopUp({icon: <Icons.Error />, message: 'Time cannot be in the past'})
+                            return;
+                        }
                         setLocations(prev => prev.map(l => l.id === locationId ? {
                             ...l, location: {...l.location, [`${type}Time`]: newValue}
                         } : l))
                     }
 
+                    function handleOpen() {
+                        if (!open) {
+                            setOpen(true);
+                        }
+                    }
+
+                    console.log(open)
                     return (
-                    <div className='time-picker-body' onClick={() => setOpen(!open)} style={enabled ? {cursor: 'pointer'} : {}}>
+                    <div className='time-picker-body' onClick={() => handleOpen()} style={enabled ? {cursor: 'pointer'} : {}}>
                         <p>{readableValue}</p>
                         {enabled && <TimePicker 
                             defaultValue={dayjs(defaultValue)}
                             sx={{position: 'absolute', opacity: 0, pointerEvents: 'none', top: '-25px'}}
                             open={open}
-                            onClose={() => setOpen(false)} // Automatically closes the timepicker on click outside
-                            onChange={(value) => handleTimeChange({newValue: value.toDate(), type: type})}
+                            onClose={() => {setOpen(false)}} // Automatically closes the timepicker on click outside
+                            onAccept={(value) => handleTimeChange({newValue: value.toDate(), type: type})}
                         />}
                     </div>
                     )

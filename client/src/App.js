@@ -4,6 +4,7 @@ import React from 'react';
 import { TravelTimesProvider } from './context/TravelTimesContext';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { ToastContainer } from "react-toastify";
 
 function App() {
   
@@ -12,6 +13,7 @@ function App() {
           <div className="app-home">
             <TravelTimesProvider>
                 <Pathly />
+                <ToastContainer />
             </TravelTimesProvider>
           </div>
        </LocalizationProvider>
