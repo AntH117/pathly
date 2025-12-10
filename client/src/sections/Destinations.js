@@ -45,7 +45,7 @@ export default function Destinations() {
         function StartLocation() {
     
             return <div className='start-location-body'>
-            <span style={{display: 'flex', justifyContent: 'center', marginRight: '1rem'}}><Icons.Location width={'22px'} height={'22px'} color={'red'}/></span>
+            <span style={{display: 'flex', justifyContent: 'center', marginRight: '1rem'}}><Icons.Location width={'22px'} height={'22px'} color={'var(--bold-accent)'}/></span>
             <span style={{width: '90%'}}><p>{startLocation?.formatted_address || 'Add location to start'}</p></span>
             </div>
         }
@@ -93,7 +93,7 @@ export default function Destinations() {
               borderRadius: "8px",
               height: 'fit-content',
               position: 'relative',
-              border: isDragging ? '1px solid black' : '1px solid transparent',
+              border: isDragging ? '1px solid var(--primary)' : '1px solid transparent',
               transition: '0.25s border',
               zIndex: isDragging && '99',
               cursor: isDragging && 'grab'
@@ -102,7 +102,7 @@ export default function Destinations() {
             return (
               <div ref={setNodeRef} style={style} {...attributes}>
                 <div className="drag-handle" {...listeners}>
-                    <Icons.Drag />
+                    <Icons.Drag color={'var(--secondary)'}/>
                 </div>
                 {children}
               </div>
@@ -276,7 +276,7 @@ export default function Destinations() {
                 function IndividualLocationInfo({title, info}) {
                     return (
                         <div className='more-location-info'>
-                            {title}: <span style={{color: '#3e8abd'}}>{info}</span>
+                            {title}: <span style={{color: 'var(--secondary)'}}>{info}</span>
                         </div>
                     )
                 }
@@ -286,7 +286,7 @@ export default function Destinations() {
                         whileTap={{ scale: 0.90 }}
                         onClick={() => setExpandInfo(!expandInfo)}
                     >
-                        {expandInfo ? <Icons.Minus width={'100%'} height={'100%'} color={'#3e8abd'}/> : <Icons.Plus width={'100%'} height={'100%'} color={'#3e8abd'}/>}
+                        {expandInfo ? <Icons.Minus width={'100%'} height={'100%'} color={'var(--secondary)'}/> : <Icons.Plus width={'100%'} height={'100%'} color={'var(--secondary)'}/>}
                     </motion.div>
                     <div className='more-location-info-body'>
                         <IndividualLocationInfo title={'Time taken'} info={locationInformation?.duration.text}/>
@@ -393,7 +393,7 @@ export default function Destinations() {
 
                     console.log(open)
                     return (
-                    <div className='time-picker-body' onClick={() => handleOpen()} style={enabled ? {cursor: 'pointer'} : {}}>
+                    <div className={`time-picker-body ${enabled && 'changeable'}`} onClick={() => handleOpen()} >
                         <p>{readableValue}</p>
                         {enabled && <TimePicker 
                             defaultValue={dayjs(defaultValue)}
@@ -415,8 +415,8 @@ export default function Destinations() {
             return <div className='individual-location-body'>
                 {locationInformation?.departureTime ?  <TransitTimes /> : 
                     <div className='transit-times-body'>
-                        <p style={{paddingTop: '0.4rem'}}>--:--</p>
-                        <p style={{paddingBottom: '0.4rem'}}>--:--</p>
+                        <p>--:--</p>
+                        <p>--:--</p>
                         </div>
                 }
                 <Rings />
@@ -425,7 +425,7 @@ export default function Destinations() {
                     <div className='individual-location-transport'>
                         <TransportSelect />
                     </div>
-                    {locationInformation && <ExpandedLocationInfo />}
+                    {locationInformation ? <ExpandedLocationInfo /> : <div className='expanded-placeholder'></div>}
                     </div>
                     <SearchBox placeholder={'Add location'} 
                         onPlaceSelected={(place) => handleLocationChange({place, locationId, transportType: selectedTransport.name, start: false})} 
@@ -438,7 +438,7 @@ export default function Destinations() {
                     whileTap={{ scale: 0.90 }}
     
                 >
-                    <Icons.X color={'rgb(255, 169, 169)'} width={'100%'} height={'100%'}/>
+                    <Icons.X color={'var(--bold-accent)'} width={'100%'} height={'100%'}/>
                 </motion.div>
                 <LocationInfo />
             </div>

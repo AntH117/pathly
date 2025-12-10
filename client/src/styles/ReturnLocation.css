@@ -11,6 +11,8 @@
     height: fit-content;
     display: flex;
     margin-bottom: 0.5rem;
+    box-sizing: border-box;
+    padding: 10px;
 }
 
 .return-location {
@@ -23,9 +25,9 @@
 }
 
 .ring.return {
-    border: 3px solid #d598f1;
+    border: 3px solid var(--secondary);
 }
 
 .ring-line-container.return {
-    background-color: #d598f1;
+    background-color: var(--secondary);
 }

@@ -6,5 +6,25 @@
   justify-content: center;
   align-items: center;
   font-family: "Nunito", sans-serif;
-  color: #333333
+  color: var(--text-primary);
+  background-color: white;
+}
+
+:root {
+  --bg: #F7F5FF;
+  --bg-card: #FFFFFF;
+  --bg-sub-card: #EDEBFF;
+
+  --text-primary: #3C3A4A;
+  --text-secondary: #696685;
+
+  --primary: #C7B9FF;
+  --secondary: #616bcc;
+  --accent: #ffb3a9;
+  --bold-accent: #ff7f72;
+  --highlight: #FFE5C2;
+
+  --border: #E3E3EC;
+
+  --gradient-nav: linear-gradient(135deg, #C4B5FD 0%, #D9CCFF 100%);
 }

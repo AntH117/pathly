@@ -83,7 +83,7 @@ export default function ReturnLocation({locationInformation, returnTrip, setRetu
             function IndividualLocationInfo({title, info}) {
                 return (
                     <div className='more-location-info'>
-                        {title}: <span style={{color: '#3e8abd'}}>{info}</span>
+                        {title}: <span style={{color: 'var(--secondary)'}}>{info}</span>
                     </div>
                 )
             }
@@ -94,7 +94,7 @@ export default function ReturnLocation({locationInformation, returnTrip, setRetu
                     whileTap={{ scale: 0.90 }}
                     onClick={() => setExpandInfo(!expandInfo)}
                 >
-                    {expandInfo ? <Icons.Minus width={'100%'} height={'100%'} color={'#3e8abd'}/> : <Icons.Plus width={'100%'} height={'100%'} color={'#3e8abd'}/>}
+                    {expandInfo ? <Icons.Minus width={'100%'} height={'100%'} color={'var(--secondary)'}/> : <Icons.Plus width={'100%'} height={'100%'} color={'var(--secondary)'}/>}
                 </motion.div>
                 <div className='more-location-info-body'>
                     <IndividualLocationInfo title={'Time taken'} info={returnTravel?.duration.text}/>
