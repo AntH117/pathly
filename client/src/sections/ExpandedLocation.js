@@ -1,4 +1,4 @@
-import './ExpandedLocation.css';
+import '../styles/ExpandedLocation.css';
 import React from 'react';
 import { motion, setDragLock } from "motion/react"
 import Icons from '../icons/Icons';

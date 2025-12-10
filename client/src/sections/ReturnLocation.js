@@ -1,4 +1,4 @@
-import './ReturnLocation.css';
+import '../styles/ReturnLocation.css';
 import React from 'react';
 import Icons from '../icons/Icons';
 import { motion, setDragLock } from "motion/react"

@@ -1,4 +1,4 @@
-import './Home.css';
+import '../styles/Home.css';
 import React from 'react';
 import { Map, Route, RouteMatrix, useMapsLibrary  } from '@vis.gl/react-google-maps';
 import { motion, setDragLock } from "motion/react"

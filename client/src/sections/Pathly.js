@@ -1,4 +1,4 @@
-import './Pathly.css';
+import '../styles/Pathly.css';
 import React from 'react';
 import Home from './Home';
 import Maps from './Maps';

@@ -1,5 +1,5 @@
 import { Map, useMap, Marker, useMapsLibrary  } from '@vis.gl/react-google-maps';
-import './Maps.css';
+import '../styles/Maps.css';
 import React from 'react';
 import Icons from '../icons/Icons';
 import { useTravelTimes } from '../context/TravelTimesContext';

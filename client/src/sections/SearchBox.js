@@ -1,4 +1,5 @@
 import React from "react";
+import '../styles/SearchBox.css';
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
 import { PlaceAutocompleteElement } from "@vis.gl/react-google-maps";
 
