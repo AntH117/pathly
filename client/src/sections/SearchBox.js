@@ -3,6 +3,7 @@ import '../styles/SearchBox.css';
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
 import { PlaceAutocompleteElement } from "@vis.gl/react-google-maps";
 
+
 export default function SearchBox({ onPlaceSelected, placeholder, initialValue, start, height}) {
   const inputRef = React.useRef(null);
   const placesLib = useMapsLibrary("places");
@@ -30,7 +31,7 @@ export default function SearchBox({ onPlaceSelected, placeholder, initialValue, 
   }, [placesLib, onPlaceSelected]);
 
   return (
-    <input className='pathly-start-input' placeholder={placeholder || 'Start Location'} ref={inputRef} value={value} onChange={(e) => setValue(e.target.value)} initialValue={initialValue}
+    <input className='pathly-start-input' placeholder={placeholder || 'Start Location'} ref={inputRef} value={value?.formatted_address || value} onChange={(e) => setValue(e.target.value)} initialValue={initialValue}
       style={start ? {} : {height: height}}
     >
     </input>

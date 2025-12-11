@@ -5,6 +5,10 @@ import { motion, setDragLock } from "motion/react"
 import { useTravelTimes } from '../context/TravelTimesContext';
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { Tooltip } from 'react-tooltip'
+import { TimePicker } from '@mui/x-date-pickers';
+import dayjs from 'dayjs';
+import PopUps from '../reuseable/PopUps';
+
 
 export default function ReturnLocation({locationInformation, returnTrip, setReturnTrip, returnToggle, startLocation}) {        
         const { travelTimes, setTravelTimes } = useTravelTimes();
@@ -15,6 +19,7 @@ export default function ReturnLocation({locationInformation, returnTrip, setRetu
         const returnIdRef = React.useRef(
             Date.now().toString() + Math.random().toString(36).substr(2, 9)
           );
+          console.log(returnTrip)
 
         const transportIcons = {
             'Car': <Icons.Car width={'80%'} height={'80%'} color={'gray'}/>,
@@ -27,12 +32,13 @@ export default function ReturnLocation({locationInformation, returnTrip, setRetu
         const [selectedTransport, setSelectedTransport] = React.useState(
             returnTrip?.transportType ? {icon: transportIcons[returnTrip.transportType], name: returnTrip.transportType} : { icon: transportIcons['Car'], name: 'Car' }
           );
-
         React.useEffect(() => {
             if (!returnToggle || !startLocation) return;
 
             const returnDetails = {
               ...startLocation,
+              departureTime: returnTrip.departureTime || null,
+              arrivalTime: returnTrip.arrivalTime || null,
               transportType: selectedTransport?.name || 'Car',
               return: true,
               locationId: returnTrip.locationId,
@@ -166,6 +172,43 @@ export default function ReturnLocation({locationInformation, returnTrip, setRetu
             </motion.div>
         }
 
+
+        function TripTimePicker({defaultValue, readableValue, type}) {
+            const [open, setOpen] = React.useState(false);
+            // const enabled = (type === 'departure' && (depArrTime === 'Departy By' || depArrTime === 'Immediately')) || (type === 'arrival' && depArrTime === 'Arrive By')
+            const enabled = true;
+            function handleTimeChange({newValue, type}) {
+                const now = new Date();
+                if (dayjs(newValue).isBefore(now)) {
+                    PopUps.ErrorPopUp({icon: <Icons.Error />, message: 'Time cannot be in the past'})
+                    return;
+                }
+                setReturnTrip(prev => ({
+                    ...prev,
+                    [`${type}Time`]: newValue
+                }))
+            }
+
+            function handleOpen() {
+                if (!open) {
+                    setOpen(true);
+                }
+            }
+
+            return (
+            <div className={`time-picker-body ${enabled && 'changeable'}`} onClick={() => handleOpen()} >
+                <p>{readableValue}</p>
+                {enabled && <TimePicker 
+                    defaultValue={dayjs(defaultValue)}
+                    sx={{position: 'absolute', opacity: 0, pointerEvents: 'none', top: '-25px'}}
+                    open={open}
+                    onClose={() => {setOpen(false)}} // Automatically closes the timepicker on click outside
+                    onAccept={(value) => handleTimeChange({newValue: value.toDate(), type: type})}
+                />}
+            </div>
+            )
+            }
+
         function TransitTimes() {
             if (!travelTimes) return
             const { departureTime, arrivalTime } = travelTimes?.find(t => t.locationId === returnTrip.locationId) || {};
@@ -183,10 +226,10 @@ export default function ReturnLocation({locationInformation, returnTrip, setRetu
                 minute: '2-digit'
               });
 
-            return <>
-                <p style={{paddingTop: '0.4rem'}}>{readableDep}</p>
-                <p style={{paddingBottom: '0.4rem'}}>{readableArr}</p>
-            </>
+            return <div className='transit-times-body'>
+                    <TripTimePicker defaultValue={departureTime} readableValue={readableDep} type={'departure'} />
+                    <TripTimePicker defaultValue={arrivalTime} readableValue={readableArr} type={'arrival'}/>
+            </div>
 
         }
   

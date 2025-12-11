@@ -34,6 +34,10 @@ function PathingDirections({setTravelTimes, mapableLocations, tripLeaveTime, dep
     //Pathing between locations
     React.useEffect(() => {
         if (!routesLib || !map) return;
+
+        // Reset previous renderers
+        renderersRef.current.forEach(r => r.setMap(null));
+        renderersRef.current = [];
     
         // Set up DirectionsService + DirectionsRenderer
         const directionsService = new routesLib.DirectionsService();
@@ -224,10 +228,12 @@ export default function Maps({startLocation, markers, locations, returnTrip, ret
     React.useEffect(() => {
       setTravelTimes([])
     }, [mapableLocations])
+
     //set mapeable locations
     React.useEffect(() => {
         const ViableLocations = locations.filter((l) => l?.location)
         if (returnTrip && returnToggle) {
+          if (returnTrip.place_id !== startLocation.place_id) return
           setMapableLocations(
           [startLocation,   
             ...ViableLocations.map(l => ({

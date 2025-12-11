@@ -16,7 +16,6 @@ import { restrictToVerticalAxis, restrictToParentElement } from '@dnd-kit/modifi
 import PopUps from '../reuseable/PopUps';
 
 import { TimePicker } from '@mui/x-date-pickers';
-import { DesktopDatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 
 import DepArrTime from './DepArrTime';
@@ -49,7 +48,7 @@ export default function Destinations() {
             <span style={{width: '90%'}}><p>{startLocation?.formatted_address || 'Add location to start'}</p></span>
             </div>
         }
-    
+        console.log(startLocation)
         function handleLocationChange({place, start, locationId, transportType}) {
             const newMarker = {
                 id: locationId || 'start',
@@ -147,7 +146,12 @@ export default function Destinations() {
                     ) {
                       return prev;
                     }
-                    return { ...startLocation, transportType: returnTrip?.transportType, return: true, locationId: returnIdRef.current };
+                    return { 
+                        ...startLocation, 
+                        transportType: returnTrip?.transportType, 
+                        return: true, locationId: returnIdRef.current,  
+                        departureTime: returnTrip?.departureTime || null,
+                        arrivalTime: returnTrip?.arrivalTime || null, };
                   });
                 }
               }, [startLocation]);
@@ -391,7 +395,6 @@ export default function Destinations() {
                         }
                     }
 
-                    console.log(open)
                     return (
                     <div className={`time-picker-body ${enabled && 'changeable'}`} onClick={() => handleOpen()} >
                         <p>{readableValue}</p>
@@ -411,7 +414,6 @@ export default function Destinations() {
                     <TripTimePicker defaultValue={arrivalTime} readableValue={readableArr} type={'arrival'}/>
                 </div>
             }
-
             return <div className='individual-location-body'>
                 {locationInformation?.departureTime ?  <TransitTimes /> : 
                     <div className='transit-times-body'>
