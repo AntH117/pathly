@@ -15,6 +15,8 @@ export default function SearchBox({ onPlaceSelected, placeholder, initialValue, 
 
   React.useEffect(() => {
     if (!placesLib || !inputRef.current) return;
+    // Remove duplicate autocomplete containers
+    document.querySelectorAll('.pac-container:not(:last-child)').forEach(e => e.remove());
 
     const autocomplete = new placesLib.Autocomplete(inputRef.current, {
     componentRestrictions: { country: "au" }, // Restricts locations to australia
