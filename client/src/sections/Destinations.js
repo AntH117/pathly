@@ -48,7 +48,7 @@ export default function Destinations() {
             <span style={{width: '90%'}}><p>{startLocation?.formatted_address || 'Add location to start'}</p></span>
             </div>
         }
-        console.log(startLocation)
+
         function handleLocationChange({place, start, locationId, transportType}) {
             const newMarker = {
                 id: locationId || 'start',
@@ -198,6 +198,8 @@ export default function Destinations() {
                     setReturnTrip={setReturnTrip} 
                     returnToggle={returnToggle} 
                     startLocation={startLocation}
+                    depArrTime={depArrTime}
+                    setTripLeaveTime={setTripLeaveTime}
                  />}
                 <div className='locations-total-duration'>
                     {`Trip Time: ${totalTripTime}`}

@@ -10,7 +10,16 @@ import dayjs from 'dayjs';
 import PopUps from '../reuseable/PopUps';
 
 
-export default function ReturnLocation({locationInformation, returnTrip, setReturnTrip, returnToggle, startLocation}) {        
+export default function ReturnLocation({locationInformation}) {      
+        const {
+            startLocation,
+            returnTrip,
+            setReturnTrip,
+            returnToggle,
+            setTripLeaveTime,
+            depArrTime,
+        } = useOutletContext();
+
         const { travelTimes, setTravelTimes } = useTravelTimes();
         const { locationId } = returnTrip
         const returnTravel = travelTimes?.find(t => t.locationId === locationId)
@@ -19,7 +28,7 @@ export default function ReturnLocation({locationInformation, returnTrip, setRetu
         const returnIdRef = React.useRef(
             Date.now().toString() + Math.random().toString(36).substr(2, 9)
           );
-          console.log(returnTrip)
+
 
         const transportIcons = {
             'Car': <Icons.Car width={'80%'} height={'80%'} color={'gray'}/>,
@@ -175,13 +184,15 @@ export default function ReturnLocation({locationInformation, returnTrip, setRetu
 
         function TripTimePicker({defaultValue, readableValue, type}) {
             const [open, setOpen] = React.useState(false);
-            // const enabled = (type === 'departure' && (depArrTime === 'Departy By' || depArrTime === 'Immediately')) || (type === 'arrival' && depArrTime === 'Arrive By')
-            const enabled = true;
+            const enabled = (type === 'departure' && (depArrTime === 'Departy By' || depArrTime === 'Immediately')) || (type === 'arrival' && depArrTime === 'Arrive By')
             function handleTimeChange({newValue, type}) {
                 const now = new Date();
                 if (dayjs(newValue).isBefore(now)) {
                     PopUps.ErrorPopUp({icon: <Icons.Error />, message: 'Time cannot be in the past'})
                     return;
+                }
+                if (depArrTime === 'Arrive By') {
+                    setTripLeaveTime(newValue)
                 }
                 setReturnTrip(prev => ({
                     ...prev,
@@ -235,9 +246,7 @@ export default function ReturnLocation({locationInformation, returnTrip, setRetu
   
         return <div className='return-location-outer'>
             <div className='return-location-body'>
-            <div className='transit-times-body'>
-                <TransitTimes />  
-            </div>
+            <TransitTimes />  
             <Rings />
             <div className='individual-location-search'>
                 <div className='individual-location-transport'>

@@ -123,9 +123,7 @@ function PathingDirections({setTravelTimes, mapableLocations, tripLeaveTime, dep
           for (let i = mapableLocations.length - 1; i > 0; i--) {
             const origin = mapableLocations[i];
             const destination = mapableLocations[i - 1];
-      
             const travelMode = routesLib.TravelMode[travelTypes[origin.transportType]];
-
             const renderer = new routesLib.DirectionsRenderer({ 
               map, 
               suppressMarkers: true,
@@ -145,7 +143,7 @@ function PathingDirections({setTravelTimes, mapableLocations, tripLeaveTime, dep
                   destination: {placeId: destination.place_id},
                   travelMode, // DRIVING | WALKING | BICYCLING | TRANSIT
                   transitOptions: {
-                    arrivalTime: destination.arrivalTime|| lastDeparture,
+                    arrivalTime: origin.arrivalTime|| lastDeparture,
                   }
                 },
                 (res, status) => {
@@ -165,7 +163,7 @@ function PathingDirections({setTravelTimes, mapableLocations, tripLeaveTime, dep
             const distance = leg.distance;
             const instructions = leg?.steps;
             const tripDuration = leg.duration.value;
-            const arrivalTime = destination.arrivalTime|| lastDeparture
+            const arrivalTime = origin.arrivalTime|| lastDeparture
             const departureTime = travelMode === 'TRANSIT' ? leg?.departure_time?.value : new Date(arrivalTime.getTime() - tripDuration * 1000);
       
             newTravelTimes.push({

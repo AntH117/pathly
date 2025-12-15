@@ -31,3 +31,11 @@
 .ring-line-container.return {
     background-color: var(--secondary);
 }
+
+.return-transit-times-body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+}

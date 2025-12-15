@@ -9,6 +9,7 @@ import { Tooltip } from 'react-tooltip'
 import 'react-tooltip/dist/react-tooltip.css';
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import {
     DatePicker,
     DatePickerProps,
@@ -17,16 +18,20 @@ import {
 import dayjs from "dayjs";
 
 
-function TimeDisplay({setTripLeaveTime}) {
-    const now = dayjs();
+function TimeDisplay({}) {
+    const {
+        setTripLeaveTime,
+        tripLeaveTime
+    } = useOutletContext();
+    const arriveBy = tripLeaveTime ? dayjs(tripLeaveTime) : dayjs();
     const [dateTimePicker, setDateTimePicker] = React.useState({})
-
+    
     React.useEffect(() => {
         setDateTimePicker({
-            date: now.format("YYYY-MM-DD"),
-            time: now.format("HH:mm")
+            date: arriveBy.format("YYYY-MM-DD"),
+            time: arriveBy.format("HH:mm")
         })
-    }, [])
+    }, [tripLeaveTime])
     
     function handleTimeChange({value, type}) {
         setDateTimePicker(t => {
@@ -62,7 +67,7 @@ function TimeDisplay({setTripLeaveTime}) {
                         value={dateTimePicker?.date}
                         onChange={(e) => handleTimeChange({value: e.target.value, type: 'date'})}
                         onBlur={handleBlur}
-                        min={now.format("YYYY-MM-DD")}/>
+                        min={arriveBy.format("YYYY-MM-DD")}/>
                 </div>
                 
             </div>
@@ -71,7 +76,7 @@ function TimeDisplay({setTripLeaveTime}) {
 }
 
 
-export default  function DepArrTime({setTripLeaveTime, depArrTime, setDepArrTime}) {
+export default  function DepArrTime({setTripLeaveTime, depArrTime, setDepArrTime, tripLeaveTime}) {
     const [toggleDropdown, setToggleDropdown] = React.useState(false)
     const options = ['Immediately', 'Depart By', 'Arrive By']
 
@@ -110,7 +115,7 @@ export default  function DepArrTime({setTripLeaveTime, depArrTime, setDepArrTime
 
     return <div className='dep-arr-body'>
         <DepArrDropDown time={depArrTime} />
-        {depArrTime !== 'Immediately' && <TimeDisplay setTripLeaveTime={setTripLeaveTime}/>}
+        {depArrTime !== 'Immediately' && <TimeDisplay setTripLeaveTime={setTripLeaveTime} tripLeaveTime={tripLeaveTime}/>}
         {toggleDropdown && <div className='dep-arr-dropdown-body'>
             {options.filter(i => i !== depArrTime).map((x) => {
                 return <DropDownOption option={x}/>
