@@ -42,6 +42,7 @@ export default function Pathly() {
                 returnTrip={returnTrip}
                 returnToggle={returnToggle}
                 tripLeaveTime={tripLeaveTime}
+                setTripLeaveTime={setTripLeaveTime}
                 depArrTime={depArrTime}
             />
         </div>

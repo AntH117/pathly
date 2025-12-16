@@ -4,8 +4,9 @@ import React from 'react';
 import Icons from '../icons/Icons';
 import { useTravelTimes } from '../context/TravelTimesContext';
 import dayjs from 'dayjs';
+import { m } from 'motion/react';
 
-function PathingDirections({setTravelTimes, mapableLocations, tripLeaveTime, depArrTime}) {
+function PathingDirections({setTravelTimes, mapableLocations, tripLeaveTime, setTripLeaveTime, depArrTime}) {
     const map = useMap()
     const routesLib = useMapsLibrary("routes");
     const [pathingRender, setPathingRender] = React.useState(null);
@@ -114,12 +115,14 @@ function PathingDirections({setTravelTimes, mapableLocations, tripLeaveTime, dep
       
             lastArrival = arrivalTime;
           }
-      
           setTravelTimes(newTravelTimes);
         };
 
         const calculateBackwards = async () => {
           let lastDeparture = tripLeaveTime || new Date(); 
+          if (mapableLocations[mapableLocations.length - 1].arrivalTime) {
+            lastDeparture = mapableLocations[mapableLocations.length - 1].arrivalTime
+          }
           for (let i = mapableLocations.length - 1; i > 0; i--) {
             const origin = mapableLocations[i];
             const destination = mapableLocations[i - 1];
@@ -133,6 +136,13 @@ function PathingDirections({setTravelTimes, mapableLocations, tripLeaveTime, dep
                   strokeWeight: 6,    
               }
           });
+
+          let leaveTime = lastDeparture;
+          if (i !== mapableLocations.length - 1) {
+            leaveTime = origin.arrivalTime && dayjs(origin.arrivalTime).isBefore(dayjs(lastDeparture)) ? origin.arrivalTime : lastDeparture
+          } else {
+            leaveTime = origin.arrivalTime || lastDeparture
+          }
           
           renderersRef.current.push(renderer);
           
@@ -143,7 +153,7 @@ function PathingDirections({setTravelTimes, mapableLocations, tripLeaveTime, dep
                   destination: {placeId: destination.place_id},
                   travelMode, // DRIVING | WALKING | BICYCLING | TRANSIT
                   transitOptions: {
-                    arrivalTime: origin.arrivalTime|| lastDeparture,
+                    arrivalTime: leaveTime,
                   }
                 },
                 (res, status) => {
@@ -163,7 +173,7 @@ function PathingDirections({setTravelTimes, mapableLocations, tripLeaveTime, dep
             const distance = leg.distance;
             const instructions = leg?.steps;
             const tripDuration = leg.duration.value;
-            const arrivalTime = origin.arrivalTime|| lastDeparture
+            const arrivalTime = leaveTime
             const departureTime = travelMode === 'TRANSIT' ? leg?.departure_time?.value : new Date(arrivalTime.getTime() - tripDuration * 1000);
       
             newTravelTimes.push({
@@ -176,10 +186,13 @@ function PathingDirections({setTravelTimes, mapableLocations, tripLeaveTime, dep
               departureTime,
               arrivalTime,
             });
+
+            if (i === mapableLocations.length - 1) {
+              setTripLeaveTime(arrivalTime)
+            }
       
             lastDeparture = departureTime;
           }
-      
           setTravelTimes(newTravelTimes);
         };
 
@@ -204,7 +217,7 @@ function PathingDirections({setTravelTimes, mapableLocations, tripLeaveTime, dep
 }
 
 
-export default function Maps({startLocation, markers, locations, returnTrip, returnToggle, tripLeaveTime, depArrTime}) {
+export default function Maps({startLocation, markers, locations, returnTrip, returnToggle, tripLeaveTime, setTripLeaveTime, depArrTime}) {
     const map = useMap()
     const [mapableLocations, setMapableLocations] = React.useState([])
     const { travelTimes, setTravelTimes } = useTravelTimes();
@@ -276,6 +289,7 @@ export default function Maps({startLocation, markers, locations, returnTrip, ret
                         mapableLocations={mapableLocations}
                         tripLeaveTime={tripLeaveTime}
                         depArrTime={depArrTime}
+                        setTripLeaveTime={setTripLeaveTime}
                     />
                 </Map>
             </span>
